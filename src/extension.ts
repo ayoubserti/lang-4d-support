@@ -2,28 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { ProviderResult } from 'vscode';
+import { D4LanguageGrammar} from './languageGrammar';
+import { D4DefinitionProvider} from './languageProvider';
 
 
-class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.HoverProvider
-{
-	constructor(){}
-	public provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.Location>
-	{
-		return new Promise((resolve, reject)=>{
-			return resolve(new vscode.Location(vscode.Uri.parse("file://Users/mac/Desktop/vs-extension/lang-4d-support/extension.ts"), new vscode.Position(23,43)));
-		});
-	}
-
-	public provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): ProviderResult<vscode.Hover>
-	{
-
-		return new Promise((resolve,reject)=>{
-
-			resolve(new vscode.Hover("working ...."));
-		});
-		
-	}
-}
 
 
 // this method is called when your extension is activated
@@ -39,15 +21,68 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World!');
+		
 	});
-
+	let langGrammar = new D4LanguageGrammar();
+	let langProvider : D4DefinitionProvider = new D4DefinitionProvider(langGrammar);
+	 
 	context.subscriptions.push(disposable);
-	context.subscriptions.push(vscode.languages.registerDefinitionProvider("4d",new D4DefinitionProvider()));
-	context.subscriptions.push(vscode.languages.registerHoverProvider("4d", new D4DefinitionProvider()))
+	context.subscriptions.push(vscode.languages.registerDefinitionProvider("4d",langProvider));
+	context.subscriptions.push(vscode.languages.registerHoverProvider("4d",  langProvider));
+
+	//symentic decoration
+	const userDefinedMethodDecoration = vscode.window.createTextEditorDecorationType({
+		borderWidth: '1px',
+		borderStyle: 'solid',
+		overviewRulerColor: 'blue',
+		overviewRulerLane: vscode.OverviewRulerLane.Right,
+		light: {
+			// this color will be used in light color themes
+			borderColor: 'darkblue'
+		},
+		dark: {
+			// this color will be used in dark color themes
+			borderColor: 'lightblue'
+		}
+	});
+	let activeEditor = vscode.window.activeTextEditor;
+	
+	function updateDecorations() {
+			
+		if (!activeEditor) {
+			return;
+		}
+		let tokensText  = langGrammar.getUnknownToken(activeEditor.document);
+
+		const regEx = /\d+/g;
+		const text = activeEditor.document.getText();
+		const userDefinedMethod: vscode.DecorationOptions[] = [];
+		
+		for ( let tk of tokensText){
+			const startPos =tk.start;
+			const endPos = tk.end;
+			const decoration = { range: new vscode.Range(startPos, endPos)};
+			
+			userDefinedMethod.push(decoration);
+			
+		}
+		
+		activeEditor.setDecorations(userDefinedMethodDecoration, userDefinedMethod);
+	}
+	
+	vscode.workspace.onDidOpenTextDocument((textdocument : vscode.TextDocument)=>{
+		//update decoration
+		updateDecorations();
+	});
+	
+	
+	
+	vscode.window.onDidChangeActiveTextEditor(editor => {
+		activeEditor = editor;
+		if (editor) {
+			updateDecorations();
+		}
+	}, null, context.subscriptions);
 }
 
 // this method is called when your extension is deactivated
