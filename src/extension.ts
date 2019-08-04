@@ -13,13 +13,6 @@ import { D4DefinitionProvider} from './languageProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "lang-4d-support"   is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
 		
 	});
@@ -30,59 +23,48 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider("4d",langProvider));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("4d",  langProvider));
 
-	//symentic decoration
-	const userDefinedMethodDecoration = vscode.window.createTextEditorDecorationType({
-		borderWidth: '1px',
-		borderStyle: 'solid',
-		overviewRulerColor: 'blue',
-		overviewRulerLane: vscode.OverviewRulerLane.Right,
-		light: {
-			// this color will be used in light color themes
-			borderColor: 'darkblue'
-		},
-		dark: {
-			// this color will be used in dark color themes
-			borderColor: 'lightblue'
-		}
-	});
-	let activeEditor = vscode.window.activeTextEditor;
-	
-	function updateDecorations() {
-			
-		if (!activeEditor) {
+	//linter
+	let diagnosticCollection = vscode.languages.createDiagnosticCollection();
+	function do4DLint(textdocument: vscode.TextDocument){
+		if ( textdocument.languageId !== '4d') {
 			return;
 		}
-		let tokensText  = langGrammar.getUnknownToken(activeEditor.document);
-
-		const regEx = /\d+/g;
-		const text = activeEditor.document.getText();
-		const userDefinedMethod: vscode.DecorationOptions[] = [];
+		let diagnostics: vscode.Diagnostic[] = [];
+		let tokensText  = langGrammar.getUnknownToken(textdocument);
 		
-		for ( let tk of tokensText){
-			const startPos =tk.start;
-			const endPos = tk.end;
-			const decoration = { range: new vscode.Range(startPos, endPos)};
-			
-			userDefinedMethod.push(decoration);
-			
-		}
-		
-		activeEditor.setDecorations(userDefinedMethodDecoration, userDefinedMethod);
+		let severity = vscode.DiagnosticSeverity.Error;
+		let msg = 'unknown symbol'
+		if ( tokensText.length > 0)
+		{
+			for(let  item of tokensText){
+				let range = new vscode.Range(item.start, item.end);
+				let diagnostic = new vscode.Diagnostic(range, msg, severity);
+				diagnostics.push(diagnostic);
+			}
+			diagnosticCollection.set(textdocument.uri, diagnostics);	
+		}	
 	}
-	
+
+		
 	vscode.workspace.onDidOpenTextDocument((textdocument : vscode.TextDocument)=>{
 		//update decoration
-		updateDecorations();
+		//updateDecorations();
+		do4DLint(textdocument);
 	});
 	
-	
+	 
 	
 	vscode.window.onDidChangeActiveTextEditor(editor => {
-		activeEditor = editor;
 		if (editor) {
-			updateDecorations();
+			//updateDecorations();
+			do4DLint(editor.document);
 		}
 	}, null, context.subscriptions);
+
+	vscode.workspace.onDidCloseTextDocument((textDocument)=> {
+		diagnosticCollection.delete(textDocument.uri);
+	}, null, context.subscriptions);
+
 }
 
 // this method is called when your extension is deactivated
