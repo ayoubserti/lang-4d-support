@@ -56,8 +56,8 @@ class D4GrammerRegister implements tm.RegistryOptions
 	public loadGrammar(scopeName: string): any{
 
 		if (scopeName === 'source.4dm') {
-				return readFile(__dirname+'/syntaxes/4d.tmLanguage.plist').then((data: Buffer)  :tm.IRawGrammar => {
-                    return tm.parseRawGrammar(data.toString());
+				return readFile(__dirname+'/syntaxes/4d.tmLanguage.json').then((data: Buffer)  :tm.IRawGrammar => {
+                    return tm.parseRawGrammar(data.toString(),__dirname+'/syntaxes/4d.tmLanguage.json');
 
                 }).then((gram: IRawGrammar)  :Thenable<any>=> {
 					return new Promise((resolve,reject) => {
@@ -121,21 +121,29 @@ export class D4LanguageGrammar {
     }
 
 
-    getToken (document : vscode.TextDocument , position : vscode.Position ) : any{
+    getTokenAtPosition (document : vscode.TextDocument , position : vscode.Position ) : any{
+        if ( document.languageId !=='4d'){
+            return;
+        }
         let gram : tm.IGrammar = this._grammar as tm.IGrammar;
         let tokens = gram.tokenizeLine(document.lineAt(position.line).text,tm.INITIAL).tokens;
         for( let entry of tokens)
         {
             if ( position.character >= entry.startIndex  && position.character <= entry.endIndex)
             {
-                
-                return  document.lineAt(position.line).text.substring(entry.startIndex ,entry.endIndex );
+                return {
+                    text: document.lineAt(position.line).text.substring(entry.startIndex ,entry.endIndex ),
+                    token: entry
+                };
             }
         }
     }
 
     
     getUnknownToken( document: vscode.TextDocument): any {
+        if ( document.languageId !=='4d'){
+            return;
+        }
         let gram : tm.IGrammar = this._grammar as tm.IGrammar;
         let tokenText = [];
         let stack = tm.INITIAL ;

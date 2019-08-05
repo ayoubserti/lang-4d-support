@@ -44,7 +44,7 @@
 			"name": "punctuation.separator.delimiter.4d"
 		},
 		{
-			"name": "meta.bracket.square.access.c",
+			"name": "meta.bracket.square.access.4d",
 			"begin": "([a-zA-Z_][a-zA-Z_0-9]*|(?<=[\\]\\)]))?(\\[)(?!\\])",
 			"beginCaptures": {
 				"1": {
