@@ -65,6 +65,12 @@
 					"include": "#function-call-innards"
 				}
 			]
+		},
+		{
+			"include": "#member_access"
+		},
+		{
+			"include": "#method_access"
 		}
 	],
 	"repository": {
@@ -118,12 +124,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"3": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"4": {
 							"name": "constant.numeric.hexadecimal.4d"
@@ -133,12 +139,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"6": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"8": {
 							"name": "keyword.other.unit.exponent.hexadecimal.4d"
@@ -154,7 +160,7 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
@@ -171,12 +177,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"3": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"4": {
 							"name": "constant.numeric.decimal.point.4d"
@@ -186,12 +192,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"6": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"8": {
 							"name": "keyword.other.unit.exponent.decimal.4d"
@@ -207,7 +213,7 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
@@ -227,12 +233,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"3": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"4": {
 							"name": "keyword.other.unit.suffix.integer.4d"
@@ -250,12 +256,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"3": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"4": {
 							"name": "keyword.other.unit.suffix.integer.4d"
@@ -273,12 +279,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"3": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"5": {
 							"name": "keyword.other.unit.exponent.hexadecimal.4d"
@@ -294,7 +300,7 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
@@ -311,12 +317,12 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
 						"3": {
-							"name": "punctuation.separator.constant.numeric"
+							"name": "punctuation.separator.constant.numeric.4d"
 						},
 						"5": {
 							"name": "keyword.other.unit.exponent.decimal.4d"
@@ -332,7 +338,7 @@
 							"patterns": [
 								{
 									"match": "(?<=[0-9a-fA-F])'(?=[0-9a-fA-F])",
-									"name": "punctuation.separator.constant.numeric"
+									"name": "punctuation.separator.constant.numeric.4d"
 								}
 							]
 						},
@@ -452,12 +458,16 @@
 					"include": "#operators"
 				},
 				{
-					"begin": "(?x)\n(?!(?:while|for|do|if|else|switch|catch|enumerate|return|typeid|alignof|alignas|sizeof|[cr]?iterate|and|and_eq|bitand|bitor|compl|not|not_eq|or|or_eq|typeid|xor|xor_eq|alignof|alignas)\\s*\\()\n(\n(?:[A-Za-z_\\s*][A-Za-z0-9_]*+)++  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+!]+|\\(\\)|\\[\\]))\n)\n\\s*(\\()",
+					"begin": "(?x)\n(?!\\s*\\()\n(\n(?:[A-Za-z_\\s*][A-Za-z0-9_]*+)++(\\:C[0-9]+)?  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+!]+|\\(\\)|\\[\\]))\n)\n\\s*(\\()",
 					"beginCaptures": {
 						"1": {
 							"name": "entity.name.function.4d"
 						},
+
 						"2": {
+							"name": "entity.command.number.4d"
+						},
+						"3": {
 							"name": "punctuation.section.arguments.begin.bracket.round.4d"
 						}
 					},
@@ -511,7 +521,110 @@
 					]
 				}
 			]
-		}
+		},
+		"member_access": {
+			"match": "((?:[a-zA-Z_\\s*]*(\\:C[0-9]+)?|(?<=\\]|\\)))\\s*)(?:((?:\\.\\*|\\.))|((?:->\\*|->)))((?:[a-zA-Z_]\\w*\\s*(?:(?:(?:\\.\\*|\\.))|(?:(?:->\\*|->)))\\s*)*)\\s*(\\b[a-zA-Z_]\\w*\\b(?!\\())",
+			"captures": {
+			  "1": {
+				"name": "variable.other.object.access.4d"
+			  },
+			  "2": {
+				"name": "entity.command.number.4d"
+			  },
+			  "3": {
+				"name": "punctuation.separator.dot-access.4d"
+			  },
+			  "4": {
+				"name": "punctuation.separator.pointer-access.4d"
+			  },
+			  "5": {
+				"patterns": [
+				  {
+					"include": "#member_access"
+				  },
+				  {
+					"include": "#method_access"
+				  },
+				  {
+					"match": "((?:[a-zA-Z_]\\w*|(?<=\\]|\\)))\\s*)(?:((?:\\.\\*|\\.))|((?:->\\*|->)))",
+					"captures": {
+					  "1": {
+						"name": "variable.other.object.access.4d"
+					  },
+					  "2": {
+						"name": "punctuation.separator.dot-access.4d"
+					  },
+					  "3": {
+						"name": "punctuation.separator.pointer-access.4d"
+					  }
+					}
+				  }
+				]
+			  },
+			  "6": {
+				"name": "variable.other.member.4d"
+			  }
+			}
+		},
+		"method_access": {
+			"contentName": "meta.function-call.member.4d",
+			"begin": "((?:[a-zA-Z_\\s*]*(\\:C[0-9]+)?|(?<=\\]|\\)))\\s*)(?:((?:\\.\\*|\\.))|((?:->\\*|->)))((?:[a-zA-Z_]\\w*\\s*(?:(?:(?:\\.\\*|\\.))|(?:(?:->\\*|->)))\\s*)*)\\s*([a-zA-Z_]\\w*)(\\()",
+			"beginCaptures": {
+			  "1": {
+				"name": "variable.other.object.access.4d"
+			  },
+			  "2": {
+				"name": "entity.command.number.4d"
+			  },
+			  "3": {
+				"name": "punctuation.separator.dot-access.4d"
+			  },
+			  "4": {
+				"name": "punctuation.separator.pointer-access.4d"
+			  },
+			  "5": {
+				"patterns": [
+				  {
+					"include": "#member_access"
+				  },
+				  {
+					"include": "#method_access"
+				  },
+				  {
+					"match": "((?:[a-zA-Z_]\\w*|(?<=\\]|\\)))\\s*)(?:((?:\\.\\*|\\.))|((?:->\\*|->)))",
+					"captures": {
+					  "1": {
+						"name": "variable.other.object.access.4d"
+					  },
+					  "2": {
+						"name": "punctuation.separator.dot-access.4d"
+					  },
+					  "3": {
+						"name": "punctuation.separator.pointer-access.4d"
+					  }
+					}
+				  }
+				]
+			  },
+			  "6": {
+				"name": "entity.name.function.member.4d"
+			  },
+			  "7": {
+				"name": "punctuation.section.arguments.begin.bracket.round.function.member.4d"
+			  }
+			},
+			"end": "(\\))",
+			"endCaptures": {
+			  "1": {
+				"name": "punctuation.section.arguments.end.bracket.round.function.member.4d"
+			  }
+			},
+			"patterns": [
+			  {
+				"include": "#function-call-innards"
+			  }
+			]
+		  }
 	},
 	"scopeName": "source.4dm"
 }

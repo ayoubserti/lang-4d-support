@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 		
 	vscode.workspace.onDidOpenTextDocument((textdocument : vscode.TextDocument)=>{
 		do4DLint(textdocument);
-	});
+	}, null, context.subscriptions);
 	
 	 
 	

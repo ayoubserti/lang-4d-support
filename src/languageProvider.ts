@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import { ProviderResult ,TextDocument, Position, Location} from "vscode";
 import {D4LanguageGrammar } from "./languageGrammar";
+import {Utils} from "./utils";
+
 export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.HoverProvider
 {
     private _langGrammar : D4LanguageGrammar;
@@ -12,8 +14,20 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
 	public provideDefinition(document: TextDocument, position: Position, token: vscode.CancellationToken): Thenable<Location>
 	{
 		return new Promise((resolve, reject)=>{
-                   
-			return resolve(new Location(vscode.Uri.parse("file://Users/mac/Desktop/vs-extension/lang-4d-support/extension.ts"), new Position(23,43)));
+            Utils.getProjectMethods().then((list: Array<vscode.Uri>)=>{
+                let token = this._langGrammar.getTokenAtPosition(document,position);
+                if (token.token.scopes.includes("entity.name.function.4d") && !token.token.scopes.includes("entity.command.number.4d"))
+                {
+                    list.find((current) => {
+                        if( current.path.includes(token.text)){
+                            resolve(new Location(current, new Position(0,0)));
+                        }
+                        
+                    },this);
+
+                }
+            });     
+		
 		});
 	}
 
@@ -22,7 +36,16 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
 		
 		return new Promise((resolve,reject)=>{
 
-			resolve(new vscode.Hover(this._langGrammar.getTokenAtPosition(document,position).text));
+            
+            Utils.getProjectMethods().then((list: Array<vscode.Uri>)=>{
+                let token = this._langGrammar.getTokenAtPosition(document,position);
+                if ( !token.token.scopes.includes("entity.command.number.4d"))
+                {
+                    resolve(new vscode.Hover(token.text));
+                }
+            });
+            
+			
 		});
 		
 	}
@@ -36,6 +59,10 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
  *          * command : have a cache of all available 4D command (2)
  *          * variable : must have a tree of definition (3)
  *          * unknown symbol: elsewhere (4)
+ *    - Preparation:
+ *          * list of all commands
+ *          * list of constant
+ *          * list of methods in workspace
  */
 
 
