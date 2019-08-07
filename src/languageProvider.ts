@@ -16,15 +16,23 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
 		return new Promise((resolve, reject)=>{
             Utils.getProjectMethods().then((list: Array<vscode.Uri>)=>{
                 let token = this._langGrammar.getTokenAtPosition(document,position);
-                if (token.token.scopes.includes("entity.name.function.4d") && !token.token.scopes.includes("entity.command.number.4d"))
+                if (token.token.scopes.includes("entity.command.number.4d"))
+                {
+                    reject(`Definition 4D Command not implement: ${token.text}`);
+                }
+                else if (token.token.scopes.includes("entity.name.function.4d")  || this._langGrammar.isTokenAMethod(token.token, token.text)) 
                 {
                     list.find((current) => {
-                        if( current.path.includes(token.text)){
+                        if( current.path.includes(token.text.trim())){
                             resolve(new Location(current, new Position(0,0)));
                         }
                         
                     },this);
 
+                }
+                else
+                {
+                    reject("Definition not found @param ${token.text}");
                 }
             });     
 		
@@ -62,7 +70,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
  *    - Preparation:
  *          * list of all commands
  *          * list of constant
- *          * list of methods in workspace
+ *          * list of methods in workspace (Utils.getProjectMethods)
  */
 
 

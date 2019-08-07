@@ -20,7 +20,22 @@
 				"command": "extension.helloWorld",
 				"title": "Hello World"
 			}
-		]
+		],
+		"languages": [{
+            "id": "4d",
+            "aliases": ["4D", "4d"],
+            "extensions": [".4dm"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "4d",
+            "scopeName": "source.4dm",
+            "path": "./syntaxes/4d.tmLanguage.json",
+            "embeddedLanguages": {
+                "meta.embedded.block.javascript": "source.js"
+              }
+
+        }]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

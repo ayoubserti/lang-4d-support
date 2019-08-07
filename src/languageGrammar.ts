@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as tm from 'vscode-textmate';
 import * as fs from 'fs';
 import { IRawGrammar } from 'vscode-textmate';
+import { Utils } from './utils';
 
 //  function tool to retrieve a node module from vscode environnement
 function getCoreNodeModule(moduleName: string) : any{
@@ -106,6 +107,7 @@ export class D4LanguageGrammar {
     private _grammarResolver : tm.Thenable<tm.IGrammar>;
     private _prevState : tm.StackElement;
     private _tokenizerResult : D4TokenizeLineResult;
+    private _workspaceMethods : Array<vscode.Uri> = [];
     private _grammar: unknown; //FIXME, unknow isn't a type
 
     constructor()
@@ -117,11 +119,14 @@ export class D4LanguageGrammar {
         this._grammarResolver = this._registry.loadGrammar("source.4dm");
 		this._grammarResolver.then((grammer: tm.IGrammar) => {
             this._grammar = grammer;
-		});
+        });
+        Utils.getProjectMethods().then((methodList)=>{
+            this._workspaceMethods= methodList;
+        });
     }
 
 
-    getTokenAtPosition (document : vscode.TextDocument , position : vscode.Position ) : any{
+   public  getTokenAtPosition (document : vscode.TextDocument , position : vscode.Position ) : any{
         if ( document.languageId !=='4d'){
             return;
         }
@@ -140,7 +145,7 @@ export class D4LanguageGrammar {
     }
 
     
-    getUnknownToken( document: vscode.TextDocument): any {
+    public  getUnknownToken( document: vscode.TextDocument): any{
         if ( document.languageId !=='4d'){
             return;
         }
@@ -164,13 +169,42 @@ export class D4LanguageGrammar {
                 {
                     let startlineChar = lineText.range.start.character;
                     tokenText.push( {start: new vscode.Position(i,startlineChar+ entry.startIndex),
-                        end : new vscode.Position(i,startlineChar+entry.endIndex)
+                        end : new vscode.Position(i,startlineChar+entry.endIndex),
+                        token : entry
                     });
                 }
             }
         }
         return tokenText;
     }
+
+    public  isTokenAMethod(token? : tm.IToken, text? : string ) : boolean{
+        let result = false;
+        //a Token is a Method if its scopes list contains ("entity.name.function.4d")
+        //or a .4dm file exist in the same the same workspace
+        if(token!==undefined &&  token.scopes.includes("entity.name.function.4d")) 
+        {
+            result = true;
+        }
+        else{
+            if(text !== undefined ){
+                this._workspaceMethods.find((elem :vscode.Uri) => {
+                    if ( elem.fsPath.includes(text.trim() + ".4dm") )
+                    {
+                        result = true;
+                    }
+                },this);
+
+            }else{
+                //TODO
+            }
+        }
+        return result;
+    }
     
+
+    
+    
+
 
 }

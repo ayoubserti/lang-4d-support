@@ -37,13 +37,18 @@ export function activate(context: vscode.ExtensionContext) {
 				let severity = vscode.DiagnosticSeverity.Error;
 				let range = new vscode.Range(item.start, item.end);
 				let msg = 'unknown symbol';
-				if (isEmpty(textdocument.getText(range))) 
+				let s = textdocument.getText(range);
+				s= s.trim();
+				if (isEmpty(s)) 
 				{
 					severity =vscode.DiagnosticSeverity.Warning;
 					msg = "Too much whitespace";
 				}
-				let diagnostic = new vscode.Diagnostic(range, msg, severity);
-				diagnostics.push(diagnostic);
+				else if (!langGrammar.isTokenAMethod(item.token , s)){
+					let diagnostic = new vscode.Diagnostic(range, msg, severity);
+					diagnostics.push(diagnostic);
+				}
+				
 			}
 			diagnosticCollection.set(textdocument.uri, diagnostics);	
 		}	
@@ -69,6 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidSaveTextDocument((textDocument)=> {
 		do4DLint(textDocument);
 	}, null, context.subscriptions);
+
 }
 
 // this method is called when your extension is deactivated
