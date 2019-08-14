@@ -57,6 +57,8 @@ export function activate(context: vscode.ExtensionContext) {
 		
 	vscode.workspace.onDidOpenTextDocument((textdocument : vscode.TextDocument)=>{
 		do4DLint(textdocument);
+		let method = langGrammar.tokenizeMethod(textdocument);
+		let a= 0;
 	}, null, context.subscriptions);
 	
 	 

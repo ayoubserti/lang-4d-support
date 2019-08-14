@@ -15,6 +15,9 @@
 			"include": "#local_variables"
 		},
 		{
+			"include" : "#long_int_variable"
+		},
+		{
 			"include": "#strings"
 		},
 		{
@@ -73,6 +76,52 @@
 		}
 	],
 	"repository": {
+		"long_int_variable" :{
+			"name" : "storage.type.4d",
+			"begin": "(?i)(C_LONGINT)(\\()((?i)[\\$a-z_0-9 ]+)((;)((?i)[\\$a-z_0-9 ]+))*",
+			"beginCaptures": {
+				"1":
+				{
+					"name" :"storage.type.longint.4d"
+				},
+				"2":
+				{
+					"name": "punctuation.section.arguments.begin.bracket.round.4d"	
+				},
+				"3":{
+					"name" : "variable.name.longint.4d"
+				},
+				"4" : {
+					"name" : "meta.parameter.type.variable.4d"
+				},
+				"5":
+				{
+					"name" :"punctuation.separator.delimiter.4d"
+				},
+				"6" :{
+					"patterns": [
+						{
+							"name" : "variable.name.longint.4d",
+							"match": "(?i)[\\$a-z_0-9 ]+"
+						}, 
+						{
+							"name" :"punctuation.separator.delimiter.4d"
+						}
+					]
+				}
+				
+			},
+			
+			"end" :"\\)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.section.arguments.end.bracket.round.4d"
+				}
+				
+			}
+				
+		},
+
 		"constant_4d" : {
 			"match" : "(?i)([a-z_0-9 ]*):K[0-9]*:[0-9]*",
 			"name": "constant.numeric.4d"
@@ -97,7 +146,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.4d",
-					"match": "(?i)\\b(C_TEXT|C_BOOLEAN|C_REAL|C_OBJECT|C_POINTER|if|while|else|end if|end for|Begin SQL|End SQL|for each|End for each|while|end while|use|end use|case of|end case|repeat|until|for)\\b"
+					"match": "(?i)\\b(C_BOOLEAN|C_REAL|C_OBJECT|C_POINTER|if|while|else|end if|end for|Begin SQL|End SQL|for each|End for each|while|end while|use|end use|case of|end case|repeat|until|for)\\b"
 				}
 			]
 		},
@@ -359,6 +408,21 @@
 		"comments": {
 			"patterns": [
 				{
+				"name": "comment.line.double-slash.4d",
+				"begin": "\\s*+(\\/\\/)",
+				"beginCaptures": {
+					"1": {
+					"name": "punctuation.definition.comment.4d"
+					}
+				},
+				"end": "(?<=\\n)(?<!\\\\\\n)",
+				"patterns": [
+					{
+					"include": "#line_continuation_character"
+					}
+				]
+				},
+				{
 					"captures": {
 						"1": {
 							"name": "meta.toc-list.banner.block.4d"
@@ -388,7 +452,7 @@
 							"name": "meta.toc-list.banner.line.4d"
 						}
 					},
-					"match": "^// =(\\s*.*?)\\s*=\\s*$\\n?",
+					"match": "^//=(\\s*.*?)\\s*=\\s*$\\n?",
 					"name": "comment.line.banner.4d"
 				},
 				{
@@ -408,12 +472,29 @@
 								}
 							},
 							"end": "(?=\\n)",
-							"name": "comment.line.double-slash.4d"
+							"name": "comment.line.double-slash.4d",
+							"patterns": [
+								{
+								  "include": "#line_continuation_character"
+								}
+							]
 						}
 					]
 				}
 			]
 		},
+		"line_continuation_character": {
+			"patterns": [
+			  {
+				"match": "(\\\\)\\n",
+				"captures": {
+				  "1": {
+					"name": "constant.character.escape.line-continuation.c"
+				  }
+				}
+			  }
+			]
+		  },
 		"operators": {
 			"patterns": [
 				{
@@ -421,7 +502,7 @@
 					"name": "keyword.operator.assignment.4d"
 				},
 				{
-					"match": "#|<=|>=|Ò=|<|>",
+					"match": "#|<=|>=|<|>|=",
 					"name": "keyword.operator.comparison.4d"
 				},
 				{
@@ -461,7 +542,7 @@
 					"include": "#operators"
 				},
 				{
-					"begin": "(?x)\n(?!\\s*\\()\n(\n(?:[A-Za-z_\\s*][A-Za-z0-9_]*+)++(\\:C[0-9]+)?  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+!]+|\\(\\)|\\[\\]))\n)\n\\s*(\\()",
+					"begin": "(?x)\n(?!\\s*\\()\n(\n(?:[A-Za-z_\\s*][A-Za-z0-9_]*+)++(\\:C[0-9]+)?  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+#]+|\\(\\)|\\[\\]))\n)\n\\s*(\\()",
 					"beginCaptures": {
 						"1": {
 							"name": "entity.name.function.4d"
@@ -504,6 +585,12 @@
 						},
 						{
 							"include" : "#param_separator"
+						},
+						{
+							"include": "#operators"
+						},
+						{
+							"include" :"member_access"
 						}
 					]
 				},
@@ -523,6 +610,9 @@
 					"patterns": [
 						{
 							"include": "#function-call-innards"
+						},
+						{
+							"include" :"member_access"
 						}
 					]
 				}

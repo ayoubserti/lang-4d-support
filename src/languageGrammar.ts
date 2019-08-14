@@ -4,6 +4,10 @@ import * as fs from 'fs';
 import { IRawGrammar } from 'vscode-textmate';
 import { Utils } from './utils';
 
+import * as d4lang from './languageDefinition'; 
+import { TLSSocket } from 'tls';
+import { METHODS } from 'http';
+
 //  function tool to retrieve a node module from vscode environnement
 function getCoreNodeModule(moduleName: string) : any{
 	try {
@@ -202,7 +206,45 @@ export class D4LanguageGrammar {
         return result;
     }
     
+    public tokenizeMethod( document : vscode.TextDocument) : d4lang.Method4D {
 
+        let method = new  d4lang.Method4D; 
+        if ( document.languageId !=='4d'){
+            throw new Error("It's not a 4D Method");            
+        }
+        let gram : tm.IGrammar = this._grammar as tm.IGrammar;
+        method._name = document.fileName;
+        let line_count = document.lineCount;
+        let rule_stack = tm.INITIAL;
+        for (let i = 0; i< line_count; i++){
+
+            let tokenResult = gram.tokenizeLine(document.lineAt(i).text,rule_stack);
+            rule_stack = tokenResult.ruleStack;
+            for( let entry of tokenResult.tokens)
+            {
+                if ( entry.scopes.includes("storage.type.longint.4d")){
+                    /**
+                     * TODO: check if variable is argument
+                     */
+                    let variable  = new  d4lang.Variable4D();
+                    variable._type = d4lang.D4VariableType.eLONGINT;
+                    variable._method = method._name;
+                    variable._line = i;
+                    variable._column = entry.startIndex;
+
+                    method._variable_list.push(variable);
+                }
+            }
+            
+        }
+
+
+        
+       
+
+
+        return method;
+    }
     
     
 

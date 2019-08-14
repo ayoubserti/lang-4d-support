@@ -3,6 +3,9 @@ import { ProviderResult ,TextDocument, Position, Location} from "vscode";
 import {D4LanguageGrammar } from "./languageGrammar";
 import {Utils} from "./utils";
 
+
+
+
 export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.HoverProvider
 {
     private _langGrammar : D4LanguageGrammar;
