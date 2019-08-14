@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { ProviderResult ,TextDocument, Position, Location} from "vscode";
 import {D4LanguageGrammar } from "./languageGrammar";
 import {Utils} from "./utils";
+import {LangCache} from './languageCache';
 
 
 
@@ -16,9 +17,28 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
 	
 	public provideDefinition(document: TextDocument, position: Position, token: vscode.CancellationToken): Thenable<Location>
 	{
+        this._langGrammar.tokenizeMethod(document);
 		return new Promise((resolve, reject)=>{
+            //check if it's a variable in method
+            let done = false;
+            let token = this._langGrammar.getTokenAtPosition(document,position);
+            let method =  LangCache.getMethods().get(document.fileName);
+            if ( method){
+                let method_path = method._name;
+                method._variable_list.forEach((variable)=>{
+                    if ( token.text === variable._name)
+                    {
+                        resolve(new Location(vscode.Uri.parse('file://'+method_path),new Position(variable._line,variable._column)));
+                        done = true;
+                        return;
+                    }
+                });
+            }
+            if ( done )
+            {
+                return;
+            }
             Utils.getProjectMethods().then((list: Array<vscode.Uri>)=>{
-                let token = this._langGrammar.getTokenAtPosition(document,position);
                 if (token.token.scopes.includes("entity.command.number.4d"))
                 {
                     reject(`Definition 4D Command not implement: ${token.text}`);

@@ -5,8 +5,7 @@ import { IRawGrammar } from 'vscode-textmate';
 import { Utils } from './utils';
 
 import * as d4lang from './languageDefinition'; 
-import { TLSSocket } from 'tls';
-import { METHODS } from 'http';
+import {LangCache} from './languageCache';
 
 //  function tool to retrieve a node module from vscode environnement
 function getCoreNodeModule(moduleName: string) : any{
@@ -222,7 +221,7 @@ export class D4LanguageGrammar {
             rule_stack = tokenResult.ruleStack;
             for( let entry of tokenResult.tokens)
             {
-                if ( entry.scopes.includes("storage.type.longint.4d")){
+                if ( entry.scopes.includes("variable.name.longint.4d")){
                     /**
                      * TODO: check if variable is argument
                      */
@@ -231,18 +230,14 @@ export class D4LanguageGrammar {
                     variable._method = method._name;
                     variable._line = i;
                     variable._column = entry.startIndex;
-
+                    variable._name = document.getText(new vscode.Range(i,entry.startIndex,i,entry.endIndex)).trim();
                     method._variable_list.push(variable);
                 }
             }
             
         }
 
-
-        
-       
-
-
+        LangCache.addMethod(method);
         return method;
     }
     
