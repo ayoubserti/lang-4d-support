@@ -12,6 +12,9 @@
 			"include": "#parameters"
 		},
 		{
+			"include" : "#affectation_variable"
+		},
+		{
 			"include": "#local_variables"
 		},
 		{
@@ -19,6 +22,9 @@
 		},
 		{
 			"include": "#strings"
+		},
+		{
+			"include": "#interprocess_variable"
 		},
 		{
 			"include": "#operators"
@@ -112,7 +118,7 @@
 				
 			},
 			
-			"end" :"\\)",
+			"end" :"\\)\\n",
 			"endCaptures": {
 				"0": {
 					"name": "punctuation.section.arguments.end.bracket.round.4d"
@@ -121,7 +127,56 @@
 			}
 				
 		},
+		"affectation_variable":
+		{
+			"name" :"meta.block.affectation.4d",
+			"begin" : "^((?i)(\\$|<>)?[a-z_0-9 ]+)(:=)",
+			"beginCaptures": {
+				"1" :{
+					"name" : "variable.name.4d"
+				},
+				"2": {
+					"name" : "meta.variable.modifier.4d"
+				},
+				"3":{
+					"name" : "keyword.operator.assignment.4d"
+				}
+				
+			},
+			"patterns": [
+				{
+					"include": "#function-call-innards"
+				},
+				{
+					"include": "#member_access"
+				},
+				{
+					"include": "#method_access"
+				},
+				{
+					"include": "#local_variables"
+				},
+				{
+					"include": "#numbers"
+				},
+				{
+					"include": "#strings"
+				},
+				{
+					"include" : "#interprocess_variable"
+				},
+				{
+					"match" : "(?i)[a-z_0-9 ]+",
+					"name" : "meta.probably_variable.4d"
+				}
+			],
+			"end": "\\n"
 
+		},
+		"interprocess_variable" :{
+			"match" :"<>(?i)[a-z_0-9 ]+",
+			"name" : "variable.interprocess.name.4d"
+		},
 		"constant_4d" : {
 			"match" : "(?i)([a-z_0-9 ]*):K[0-9]*:[0-9]*",
 			"name": "constant.numeric.4d"
