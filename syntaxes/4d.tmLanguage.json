@@ -21,6 +21,9 @@
 			"include" : "#long_int_variable"
 		},
 		{
+			"include" :"#real_variable"
+		},
+		{
 			"include": "#strings"
 		},
 		{
@@ -84,7 +87,7 @@
 	"repository": {
 		"long_int_variable" :{
 			"name" : "storage.type.4d",
-			"begin": "(?i)(C_LONGINT)(\\()((?i)[\\$a-z_0-9 ]+)((;)((?i)[\\$a-z_0-9 ]+))*",
+			"begin": "(?i)(C_LONGINT(\\:C283)?)(\\()((?i)[\\$a-z_0-9 ]+)",
 			"beginCaptures": {
 				"1":
 				{
@@ -92,35 +95,68 @@
 				},
 				"2":
 				{
+					"name" : "meta.c_longint.code.4d"
+				},
+				"3":
+				{
 					"name": "punctuation.section.arguments.begin.bracket.round.4d"	
 				},
-				"3":{
+				"4":{
 					"name" : "variable.name.longint.4d"
-				},
-				"4" : {
-					"name" : "meta.parameter.type.variable.4d"
-				},
-				"5":
-				{
-					"name" :"punctuation.separator.delimiter.4d"
-				},
-				"6" :{
-					"patterns": [
+				}
+			},
+			"patterns": [
 						{
 							"name" : "variable.name.longint.4d",
-							"match": "(?i)[\\$a-z_0-9 ]+"
+							"match": "(?i)(?:\\$|<>|)[a-z_0-9 ]+"
 						}, 
 						{
-							"name" :"punctuation.separator.delimiter.4d"
+							"include" :"#param_separator"
 						}
-					]
+					],
+			
+			"end" :"(\\))",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.section.arguments.end.bracket.round.4d"
 				}
 				
+			}
+				
+		},
+		"real_variable" :{
+			"name" : "storage.type.real.4d",
+			"begin": "(?i)(C_REAL(\\:C282)?)(\\()((?i)[\\$a-z_0-9 ]+)",
+			"beginCaptures": {
+				"1":
+				{
+					"name" :"storage.type.real.4d"
+				},
+				"2":
+				{
+					"name" : "meta.c_real.code.4d"
+				},
+				"3":
+				{
+					"name": "punctuation.section.arguments.begin.bracket.round.4d"	
+				},
+				"4":{
+					"name" : "variable.name.real.4d"
+				}
 			},
+			"patterns": [
+						{
+							"name" : "variable.name.real.4d",
+							"match": "(?i)(?:\\$|<>|)[a-z_0-9 ]+"
+						}, 
+						{
+							"include" :"#param_separator"
+						}
+					],
 			
-			"end" :"\\)\\n",
+			"end" :"(\\))",
 			"endCaptures": {
-				"0": {
+				"1": {
 					"name": "punctuation.section.arguments.end.bracket.round.4d"
 				}
 				
@@ -130,15 +166,12 @@
 		"affectation_variable":
 		{
 			"name" :"meta.block.affectation.4d",
-			"begin" : "^((?i)(\\$|<>)?[a-z_0-9 ]+)(:=)",
+			"begin" : "^((?i)(?:\\$|<>|)[a-z_0-9 ]+)(:=)",
 			"beginCaptures": {
 				"1" :{
 					"name" : "variable.name.4d"
 				},
-				"2": {
-					"name" : "meta.variable.modifier.4d"
-				},
-				"3":{
+				"2":{
 					"name" : "keyword.operator.assignment.4d"
 				}
 				
@@ -170,7 +203,12 @@
 					"name" : "meta.probably_variable.4d"
 				}
 			],
-			"end": "\\n"
+			"end": "(\\n)",
+			"endCaptures": {
+				"1" : {
+					"name" :"punctuation.section.end.affectaction.4d"
+				}
+			}
 
 		},
 		"interprocess_variable" :{
@@ -201,7 +239,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.4d",
-					"match": "(?i)\\b(C_BOOLEAN|C_REAL|C_OBJECT|C_POINTER|if|while|else|end if|end for|Begin SQL|End SQL|for each|End for each|while|end while|use|end use|case of|end case|repeat|until|for)\\b"
+					"match": "(?i)\\b(C_BOOLEAN|C_OBJECT|C_POINTER|if|while|else|end if|end for|Begin SQL|End SQL|for each|End for each|while|end while|use|end use|case of|end case|repeat|until|for)\\b"
 				}
 			]
 		},
