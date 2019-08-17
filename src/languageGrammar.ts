@@ -6,6 +6,7 @@ import { Utils } from './utils';
 
 import * as d4lang from './languageDefinition'; 
 import {LangCache} from './languageCache';
+import { D4DefinitionProvider } from './languageProvider';
 
 //  function tool to retrieve a node module from vscode environnement
 function getCoreNodeModule(moduleName: string) : any{
@@ -207,6 +208,29 @@ export class D4LanguageGrammar {
     
     public tokenizeMethod( document : vscode.TextDocument) : d4lang.Method4D {
 
+        function mapType(stype : string) : d4lang.D4VariableType
+        {
+            let map : { [key : string ]: d4lang.D4VariableType } = { "longint" : d4lang.D4VariableType.eLONGINT,
+                        "real"    : d4lang.D4VariableType.eREAL,
+                        "text"    : d4lang.D4VariableType.eTEXT,
+                        "picture"    : d4lang.D4VariableType.ePICTIURE,
+                        "boolean"    : d4lang.D4VariableType.eBOOlEAN,
+                        "pointer"    : d4lang.D4VariableType.ePOINTER,
+                        "array_longint"    : d4lang.D4VariableType.eARRAY_LONGINT,
+                        "array_real"    : d4lang.D4VariableType.eARRAY_REAL,
+                        "array_text"    : d4lang.D4VariableType.eARRAY_TEXT,
+                        "array_boolean"    : d4lang.D4VariableType.eARRAY_BOOLEAN,
+                        "array_picture"    : d4lang.D4VariableType.eARRAY_PICTURE,
+                        "array_pointer"    : d4lang.D4VariableType.eARRAY_POINTER,
+                        "blob"    : d4lang.D4VariableType.eBLOB 
+                        //TODO: complete the list 
+                    };
+            if ( map[stype] !== undefined)
+            {
+                return map[stype];
+            }
+            return d4lang.D4VariableType.eUNKNOWN;
+        }
         let method = new  d4lang.Method4D; 
         if ( document.languageId !=='4d'){
             throw new Error("It's not a 4D Method");            
@@ -221,18 +245,34 @@ export class D4LanguageGrammar {
             rule_stack = tokenResult.ruleStack;
             for( let entry of tokenResult.tokens)
             {
-                if ( entry.scopes.includes("variable.name.longint.4d")){
+                let matchtoken = entry.scopes.join().match(/variable\.name\.([a-z]+)\.4d/i);
+                if ( matchtoken !== null && matchtoken.length > 1)
+                {
                     /**
                      * TODO: check if variable is argument
                      */
                     let variable  = new  d4lang.Variable4D();
-                    variable._type = d4lang.D4VariableType.eLONGINT;
                     variable._method = method._name;
                     variable._line = i;
                     variable._column = entry.startIndex;
                     variable._name = document.getText(new vscode.Range(i,entry.startIndex,i,entry.endIndex)).trim();
+                    
+                    //variable kind
+                    if ( variable._name.startsWith("$"))
+                    {
+                        variable._kind = d4lang.D4VariableKind.kLocal;
+                    }else if ( variable._name.startsWith("<>"))
+                    {
+                        variable._kind = d4lang.D4VariableKind.kInterPrecess;
+                    }
+                    else{
+                        variable._kind = d4lang.D4VariableKind.kProcess;
+                    }
+                    //variable type
+                    variable._type = mapType(matchtoken[1]);
                     method._variable_list.push(variable);
                 }
+                
             }
             
         }

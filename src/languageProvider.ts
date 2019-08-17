@@ -7,7 +7,7 @@ import {LangCache} from './languageCache';
 
 
 
-export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.HoverProvider
+export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.HoverProvider , vscode.DocumentSymbolProvider
 {
     private _langGrammar : D4LanguageGrammar;
 
@@ -26,7 +26,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
             if ( method){
                 let method_path = method._name;
                 method._variable_list.forEach((variable)=>{
-                    if ( token.text === variable._name)
+                    if ( token.text.trim() === variable._name)
                     {
                         resolve(new Location(vscode.Uri.parse('file://'+method_path),new Position(variable._line,variable._column)));
                         done = true;
@@ -79,7 +79,21 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
 			
 		});
 		
-	}
+    }
+    
+    public provideDocumentSymbols ( document: vscode.TextDocument, token: vscode.CancellationToken): Thenable<vscode.SymbolInformation[]> {
+        
+        return new Promise((resolve, reject) => {
+            let method = this._langGrammar.tokenizeMethod(document);
+            let syminfos : vscode.SymbolInformation[] = [];
+            for (let variable of method._variable_list)
+            {
+                let sinfo  = new vscode.SymbolInformation(variable._name,vscode.SymbolKind.Variable,"variable",new Location(vscode.Uri.parse('file://' +method._name),new vscode.Range(variable._line,variable._column,variable._line,variable._column + variable._name.length)));
+                syminfos.push(sinfo);
+            }
+            resolve(syminfos);
+        });
+    }
 }
 
 /**

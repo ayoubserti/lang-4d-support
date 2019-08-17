@@ -17,6 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider("4d",langProvider));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("4d",  langProvider));
+	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("4d",  langProvider));
+	
 
 	//linter
 	let diagnosticCollection = vscode.languages.createDiagnosticCollection();
@@ -38,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 				let range = new vscode.Range(item.start, item.end);
 				let msg = 'unknown symbol';
 				let s = textdocument.getText(range);
-				s= s.trim();
+				s= typeof s === 'string' ? s.trim() : " ";
 				if (isEmpty(s)) 
 				{
 					severity =vscode.DiagnosticSeverity.Warning;
