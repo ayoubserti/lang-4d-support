@@ -245,6 +245,8 @@ export class D4LanguageGrammar {
             rule_stack = tokenResult.ruleStack;
             for( let entry of tokenResult.tokens)
             {
+                let to_range = new vscode.Range(i,entry.startIndex,i,entry.endIndex)
+                let token_text  = document.getText(to_range).trim();
                 let matchtoken = entry.scopes.join().match(/variable\.name\.([a-z]+)\.4d/i);
                 if ( matchtoken !== null && matchtoken.length > 1)
                 {
@@ -255,8 +257,8 @@ export class D4LanguageGrammar {
                     variable._method = method._name;
                     variable._line = i;
                     variable._column = entry.startIndex;
-                    variable._name = document.getText(new vscode.Range(i,entry.startIndex,i,entry.endIndex)).trim();
-                    
+                    variable._name = token_text;
+                    method._tokens.set(variable._name,[]);
                     //variable kind
                     if ( variable._name.startsWith("$"))
                     {
@@ -272,9 +274,14 @@ export class D4LanguageGrammar {
                     variable._type = mapType(matchtoken[1]);
                     method._variable_list.push(variable);
                 }
-                
+                //store occurences
+                let occurences = method._tokens.get(token_text);
+                if ( occurences)
+                {
+                    occurences.push(new d4lang.TokenRange(entry,to_range));
+                }
+               
             }
-            
         }
 
         LangCache.addMethod(method);

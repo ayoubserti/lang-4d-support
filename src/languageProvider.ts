@@ -7,7 +7,7 @@ import {LangCache} from './languageCache';
 
 
 
-export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.HoverProvider , vscode.DocumentSymbolProvider
+export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.HoverProvider , vscode.DocumentSymbolProvider , vscode.DocumentHighlightProvider
 {
     private _langGrammar : D4LanguageGrammar;
 
@@ -93,6 +93,25 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
             }
             resolve(syminfos);
         });
+    }
+    provideDocumentHighlights(document: TextDocument, position: Position, tcancel: vscode.CancellationToken): ProviderResult<vscode.DocumentHighlight[]>
+    {
+        let result : vscode.DocumentHighlight[] = [];
+        let method = this._langGrammar.tokenizeMethod(document);
+        let token = this._langGrammar.getTokenAtPosition(document,position);
+        if (method && token)
+        {
+            let occurences = method._tokens.get(token.text);
+            if ( occurences)
+            {
+                for(let occ of occurences)
+                {
+                    let highlight = new vscode.DocumentHighlight(occ._range,vscode.DocumentHighlightKind.Write);
+                    result.push(highlight);
+                }
+            }
+        }
+        return result;
     }
 }
 

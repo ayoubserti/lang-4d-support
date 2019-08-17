@@ -1,3 +1,6 @@
+import { IToken } from "vscode-textmate";
+import { Range } from "vscode";
+
 export enum D4VariableType
 {
     eUNKNOWN = 0,
@@ -55,6 +58,18 @@ export class Argument4D
     public _type : D4VariableType = D4VariableType.eUNKNOWN;
 
 }
+
+export class TokenRange
+{
+    _token : IToken;
+    _range : Range;
+
+    constructor(token : IToken , range : Range){
+        this._token = token;
+        this._range = range;
+    }
+
+}
 export class Method4D
 {
      _name : string = "";
@@ -62,6 +77,7 @@ export class Method4D
      _method_calls : Array<Method4D> = [];
      _command_calls : Array<Command4D> = [];
      _arguments  : Map<number ,Argument4D> = new Map();
+     _tokens  : Map<string , Array<TokenRange>> = new Map();
 
     public isReturning() : boolean {
 

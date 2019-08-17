@@ -39,6 +39,9 @@
 			"include": "#interprocess_variable"
 		},
 		{
+			"include": "#local_variables"
+		},
+		{
 			"include": "#operators"
 		},
 		{ 
