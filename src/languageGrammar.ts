@@ -7,6 +7,7 @@ import { Utils } from './utils';
 import * as d4lang from './languageDefinition'; 
 import {LangCache} from './languageCache';
 import { D4DefinitionProvider } from './languageProvider';
+import { ENGINE_METHOD_DIGESTS } from 'constants';
 
 //  function tool to retrieve a node module from vscode environnement
 function getCoreNodeModule(moduleName: string) : any{
@@ -245,7 +246,7 @@ export class D4LanguageGrammar {
             rule_stack = tokenResult.ruleStack;
             for( let entry of tokenResult.tokens)
             {
-                let to_range = new vscode.Range(i,entry.startIndex,i,entry.endIndex)
+                let to_range = new vscode.Range(i,entry.startIndex,i,entry.endIndex);
                 let token_text  = document.getText(to_range).trim();
                 let matchtoken = entry.scopes.join().match(/variable\.name\.([a-z]+)\.4d/i);
                 if ( matchtoken !== null && matchtoken.length > 1)
@@ -274,6 +275,15 @@ export class D4LanguageGrammar {
                     variable._type = mapType(matchtoken[1]);
                     method._variable_list.push(variable);
                 }
+                //tables
+                if(entry.scopes.includes("support.table.name.4d") )
+                {
+                    if ( !method._tokens.has(token_text)){
+                       method._tokens.set(token_text,[]);
+                       method._table_list.push(token_text);
+                    }
+                }
+
                 //store occurences
                 let occurences = method._tokens.get(token_text);
                 if ( occurences)

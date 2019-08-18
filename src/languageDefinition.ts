@@ -78,6 +78,7 @@ export class Method4D
      _command_calls : Array<Command4D> = [];
      _arguments  : Map<number ,Argument4D> = new Map();
      _tokens  : Map<string , Array<TokenRange>> = new Map();
+     _table_list : Array<string> = [];
 
     public isReturning() : boolean {
 

@@ -57,6 +57,9 @@
 			"include": "#block"
 		},
 		{
+			"include" :"#table_reference"
+		},
+		{
 			"include": "#function-call-innards"
 		},
 		{
@@ -331,6 +334,21 @@
 			}
 				
 		},
+		"table_reference":
+		{
+			"begin": "(?i)\\[([a-z_]+[a-z_0-9 ]*[a-z_0-9]+)(\\:[0-9]+)?",
+			"beginCaptures": {
+				"1":
+				{
+					"name" : "support.table.name.4d"
+				},
+				"2" : {
+					"name" : "support.table.index.4d"
+				}
+			},
+			"end" : "\\]"
+			
+		},
 		"affectation_variable":
 		{
 			"name" :"meta.block.affectation.4d",
@@ -367,7 +385,7 @@
 					"include" : "#interprocess_variable"
 				},
 				{
-					"match" : "(?i)[a-z_0-9 ]+",
+					"match" : "(?i)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+",
 					"name" : "meta.probably_variable.4d"
 				}
 			],
@@ -803,7 +821,7 @@
 					"include": "#operators"
 				},
 				{
-					"begin": "(?x)\n(?!\\s*\\()\n(\n(?:[A-Za-z_\\s*][A-Za-z0-9_]*+)++(\\:C[0-9]+)?  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+#]+|\\(\\)|\\[\\]))\n)\n\\s*(\\()",
+					"begin": "(?x)\n(?!\\s*\\()\n(\n(?:[A-Za-z_ ][A-Za-z0-9_]*+)++(\\:C[0-9]+)?  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+#]+|\\(\\)))\n)\n\\s*(\\()",
 					"beginCaptures": {
 						"1": {
 							"name": "entity.name.function.4d"
@@ -852,6 +870,9 @@
 						},
 						{
 							"include" :"#member_access"
+						},
+						{
+							"include" :"#table_reference"
 						}
 					]
 				},
@@ -874,6 +895,9 @@
 						},
 						{
 							"include" :"#member_access"
+						},
+						{
+							"include" :"#table_reference"
 						}
 					]
 				}
@@ -979,6 +1003,9 @@
 			"patterns": [
 			  {
 				"include": "#function-call-innards"
+			  },
+			  {
+				  "include" :"#table_reference"
 			  }
 			]
 		  }

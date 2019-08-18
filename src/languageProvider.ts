@@ -86,10 +86,22 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
         return new Promise((resolve, reject) => {
             let method = this._langGrammar.tokenizeMethod(document);
             let syminfos : vscode.SymbolInformation[] = [];
+            //variables
             for (let variable of method._variable_list)
             {
                 let sinfo  = new vscode.SymbolInformation(variable._name,vscode.SymbolKind.Variable,"variable",new Location(vscode.Uri.parse('file://' +method._name),new vscode.Range(variable._line,variable._column,variable._line,variable._column + variable._name.length)));
                 syminfos.push(sinfo);
+            }
+            //tables
+            for(let tb_name of method._table_list){
+                //TODO: SymbolKind.Class isn't the right kind
+                //first token of table
+                let occs  = method._tokens.get(tb_name);
+                if ( occs )
+                {
+                    let sinfo  = new vscode.SymbolInformation(tb_name,vscode.SymbolKind.Class,"table",new Location(vscode.Uri.parse('file://' +method._name),occs[0]._range));
+                    syminfos.push(sinfo);   
+                }
             }
             resolve(syminfos);
         });
