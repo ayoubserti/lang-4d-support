@@ -21,21 +21,29 @@
 				"title": "Hello World"
 			}
 		],
-		"languages": [{
-            "id": "4d",
-            "aliases": ["4D", "4d"],
-            "extensions": [".4dm"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "4d",
-            "scopeName": "source.4dm",
-            "path": "./syntaxes/4d.tmLanguage.json",
-            "embeddedLanguages": {
-                "meta.embedded.block.javascript": "source.js"
-              }
-
-        }]
+		"languages": [
+			{
+				"id": "4d",
+				"aliases": [
+					"4D",
+					"4d"
+				],
+				"extensions": [
+					".4dm"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "4d",
+				"scopeName": "source.4dm",
+				"path": "./syntaxes/4d.tmLanguage.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.javascript": "source.js"
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -57,6 +65,7 @@
 		"vscode-test": "^1.0.2"
 	},
 	"dependencies": {
+		"fast-xml-parser": "^3.12.20",
 		"vscode-textmate": "^4.1.1"
 	}
 }

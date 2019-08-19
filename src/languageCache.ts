@@ -1,5 +1,4 @@
 import * as d4lang from './languageDefinition';
-import { D4DefinitionProvider } from './languageProvider';
 
 class Cache{
 

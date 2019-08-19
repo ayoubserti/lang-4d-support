@@ -33,6 +33,9 @@
 			"include" : "#pointer_variable"
 		},
 		{
+			"include" : "#object_variable"
+		},
+		{
 			"include": "#strings"
 		},
 		{
@@ -102,7 +105,7 @@
 	"repository": {
 		"long_int_variable" :{
 			"name" : "storage.type.4d",
-			"begin": "(?i)(C_LONGINT(\\:C283)?)(\\()((?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+)",
+			"begin": "(?i)(C_LONGINT(\\:C283)?)(\\()((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)",
 			"beginCaptures": {
 				"1":
 				{
@@ -141,7 +144,7 @@
 		},
 		"real_variable" :{
 			"name" : "storage.type.real.4d",
-			"begin": "(?i)(C_REAL(\\:C285)?)(\\()((?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+)",
+			"begin": "(?i)(C_REAL(\\:C285)?)(\\()((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)",
 			"beginCaptures": {
 				"1":
 				{
@@ -162,7 +165,7 @@
 			"patterns": [
 						{
 							"name" : "variable.name.real.4d",
-							"match": "(?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+"
+							"match": "(?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*"
 						}, 
 						{
 							"include" :"#param_separator"
@@ -180,7 +183,7 @@
 		},
 		"text_variable" :{
 			"name" : "storage.type.text.4d",
-			"begin": "(?i)(C_TEXT(\\:C284)?)(\\()((?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+)",
+			"begin": "(?i)(C_TEXT(\\:C284)?)(\\()((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)",
 			"beginCaptures": {
 				"1":
 				{
@@ -201,7 +204,7 @@
 			"patterns": [
 						{
 							"name" : "variable.name.text.4d",
-							"match": "(?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+"
+							"match": "(?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*"
 						}, 
 						{
 							"include" :"#param_separator"
@@ -240,7 +243,7 @@
 			"patterns": [
 						{
 							"name" : "variable.name.boolean.4d",
-							"match": "(?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+"
+							"match": "(?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*"
 						}, 
 						{
 							"include" :"#param_separator"
@@ -258,7 +261,7 @@
 		},
 		"picture_variable" :{
 			"name" : "storage.type.picture.4d",
-			"begin": "(?i)(C_PICTURE(\\:C286)?)(\\()((?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+)",
+			"begin": "(?i)(C_PICTURE(\\:C286)?)(\\()((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)",
 			"beginCaptures": {
 				"1":
 				{
@@ -279,7 +282,7 @@
 			"patterns": [
 						{
 							"name" : "variable.name.picture.4d",
-							"match": "(?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+"
+							"match": "(?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*"
 						}, 
 						{
 							"include" :"#param_separator"
@@ -297,7 +300,7 @@
 		},
 		"pointer_variable" :{
 			"name" : "storage.type.pointer.4d",
-			"begin": "(?i)(C_POINTER(\\:301)?)(\\()((?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+)",
+			"begin": "(?i)(C_POINTER(\\:C301)?)(\\()((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)",
 			"beginCaptures": {
 				"1":
 				{
@@ -318,7 +321,46 @@
 			"patterns": [
 						{
 							"name" : "variable.name.pointer.4d",
-							"match": "(?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+"
+							"match": "(?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*"
+						}, 
+						{
+							"include" :"#param_separator"
+						}
+					],
+			
+			"end" :"(\\))",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.section.arguments.end.bracket.round.4d"
+				}
+				
+			}
+				
+		},
+		"object_variable" :{
+			"name" : "storage.type.object.4d",
+			"begin": "(?i)(C_OBJECT(\\:C1216)?)(\\()((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)",
+			"beginCaptures": {
+				"1":
+				{
+					"name" :"storage.type.object.4d"
+				},
+				"2":
+				{
+					"name" : "meta.c_object.code.4d"
+				},
+				"3":
+				{
+					"name": "punctuation.section.arguments.begin.bracket.round.4d"	
+				},
+				"4":{
+					"name" : "variable.name.object.4d"
+				}
+			},
+			"patterns": [
+						{
+							"name" : "variable.name.object.4d",
+							"match": "(?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*"
 						}, 
 						{
 							"include" :"#param_separator"
@@ -336,7 +378,7 @@
 		},
 		"table_reference":
 		{
-			"begin": "(?i)\\[([a-z_]+[a-z_0-9 ]*[a-z_0-9]+)(\\:[0-9]+)?",
+			"begin": "(?i)\\[((?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)(\\:[0-9]+)?",
 			"beginCaptures": {
 				"1":
 				{
@@ -352,7 +394,7 @@
 		"affectation_variable":
 		{
 			"name" :"meta.block.affectation.4d",
-			"begin" : "^((?i)(?:\\$|<>|)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+)(:=)",
+			"begin" : "^((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)(:=)",
 			"beginCaptures": {
 				"1" :{
 					"name" : "variable.name.4d"
@@ -385,7 +427,7 @@
 					"include" : "#interprocess_variable"
 				},
 				{
-					"match" : "(?i)[a-z_]+[a-z_0-9 ]*[a-z_0-9]+",
+					"match" : "(?i)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*",
 					"name" : "meta.probably_variable.4d"
 				}
 			],

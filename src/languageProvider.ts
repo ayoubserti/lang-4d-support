@@ -3,6 +3,7 @@ import { ProviderResult ,TextDocument, Position, Location} from "vscode";
 import {D4LanguageGrammar } from "./languageGrammar";
 import {Utils} from "./utils";
 import {LangCache} from './languageCache';
+import * as cat from './catalogDefinition';
 
 
 
@@ -81,29 +82,35 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider , vscode.
 		
     }
     
-    public provideDocumentSymbols ( document: vscode.TextDocument, token: vscode.CancellationToken): Thenable<vscode.SymbolInformation[]> {
+    public provideDocumentSymbols ( document: vscode.TextDocument, token: vscode.CancellationToken): ProviderResult<vscode.SymbolInformation[] | vscode.DocumentSymbol[]> {
         
         return new Promise((resolve, reject) => {
             let method = this._langGrammar.tokenizeMethod(document);
-            let syminfos : vscode.SymbolInformation[] = [];
+            let syminfos : vscode.DocumentSymbol[] = [];
+            
             //variables
             for (let variable of method._variable_list)
             {
-                let sinfo  = new vscode.SymbolInformation(variable._name,vscode.SymbolKind.Variable,"variable",new Location(vscode.Uri.parse('file://' +method._name),new vscode.Range(variable._line,variable._column,variable._line,variable._column + variable._name.length)));
+                let rg = new vscode.Range(variable._line,variable._column,variable._line,variable._column + variable._name.length);
+                let sinfo  = new vscode.DocumentSymbol(variable._name,"variable",vscode.SymbolKind.Variable,rg,rg);
                 syminfos.push(sinfo);
             }
-            //tables
-            for(let tb_name of method._table_list){
-                //TODO: SymbolKind.Class isn't the right kind
-                //first token of table
-                let occs  = method._tokens.get(tb_name);
-                if ( occs )
+            //tables are globals
+            cat.catalog.refresh().then((res : Array<cat.D4Table>) => {
+                for (let tb of res)
                 {
-                    let sinfo  = new vscode.SymbolInformation(tb_name,vscode.SymbolKind.Class,"table",new Location(vscode.Uri.parse('file://' +method._name),occs[0]._range));
-                    syminfos.push(sinfo);   
+                    let rg = new vscode.Range(1,1,1,20); //arbitrary range
+                    let sinfo  = new vscode.DocumentSymbol(tb._name,"Table",vscode.SymbolKind.Class,rg,rg);
+                    syminfos.push(sinfo);
+                    for( let f of tb._field_list){
+                        let finfo  = new vscode.DocumentSymbol(f,"Field",vscode.SymbolKind.Variable,rg,rg);
+                        sinfo.children.push(finfo);
+                        
+                    }
                 }
-            }
-            resolve(syminfos);
+                resolve(syminfos);
+            }); 
+            
         });
     }
     provideDocumentHighlights(document: TextDocument, position: Position, tcancel: vscode.CancellationToken): ProviderResult<vscode.DocumentHighlight[]>
