@@ -283,7 +283,41 @@ export class D4LanguageGrammar {
                        method._table_list.push(token_text);
                     }
                 }
-
+                //declared variable by asseignement
+                if (entry.scopes.includes("meta.block.affectation.4d") && entry.scopes.includes("variable.name.4d"))
+                {
+                    let variable = method._variable_list.find((elem)=> {
+                        if ( elem._name === token_text.trim())
+                        {
+                            return true;
+                        }
+                    });
+                    if ( variable === undefined)
+                    {
+                        //not declared, add it
+                        let variable  = new  d4lang.Variable4D();
+                        variable._method = method._name;
+                        variable._line = i;
+                        variable._column = entry.startIndex;
+                        variable._name = token_text;
+                        method._tokens.set(variable._name,[]);
+                        //variable kind
+                        if ( variable._name.startsWith("$"))
+                        {
+                            variable._kind = d4lang.D4VariableKind.kLocal;
+                        }else if ( variable._name.startsWith("<>"))
+                        {
+                            variable._kind = d4lang.D4VariableKind.kInterPrecess;
+                        }
+                        else{
+                            variable._kind = d4lang.D4VariableKind.kProcess;
+                        }
+                        //variable type
+                        variable._type = d4lang.D4VariableType.eUNKNOWN; //unknown for now
+                        method._variable_list.push(variable);
+                    }
+                }
+                
                 //store occurences
                 let occurences = method._tokens.get(token_text);
                 if ( occurences)
