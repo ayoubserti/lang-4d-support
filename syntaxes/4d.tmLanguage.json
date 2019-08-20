@@ -126,7 +126,7 @@
 			"patterns": [
 						{
 							"name" : "variable.name.longint.4d",
-							"match": "(?i)(?:\\$|<>|)[a-z_0-9][a-z_0-9 ]+"
+							"match": "(?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*"
 						}, 
 						{
 							"include" :"#param_separator"
