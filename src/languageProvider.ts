@@ -4,16 +4,26 @@ import { D4LanguageGrammar } from "./languageGrammar";
 import { Utils } from "./utils";
 import { LangCache } from './languageCache';
 import * as cat from './catalogDefinition';
-import { Method4D } from "./languageDefinition";
+import * as readline from 'readline'
+import * as fs from 'fs'
+
+const readInterface = readline.createInterface({
+    input: fs.createReadStream(__dirname+'/support/commands.txt')
+    
+});
 
 
-
-
-export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.HoverProvider, vscode.DocumentSymbolProvider, vscode.DocumentHighlightProvider {
+export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.HoverProvider, vscode.DocumentSymbolProvider, vscode.DocumentHighlightProvider,vscode.CompletionItemProvider {
     private _langGrammar: D4LanguageGrammar;
+    private _commandsItem : vscode.CompletionItem[];
 
     constructor(langGrammar?: D4LanguageGrammar) {
         this._langGrammar = langGrammar || new D4LanguageGrammar();
+        this._commandsItem = [];
+        readInterface.on('line',(line) =>{
+                this._commandsItem.push(new vscode.CompletionItem(line.trim(),vscode.CompletionItemKind.Method));
+        });
+        
     }
 
     public provideDefinition(document: TextDocument, position: Position, token: vscode.CancellationToken): Thenable<Location> {
@@ -149,7 +159,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
             }
         });
     }
-    provideDocumentHighlights(document: TextDocument, position: Position, tcancel: vscode.CancellationToken): ProviderResult<vscode.DocumentHighlight[]> {
+    public provideDocumentHighlights(document: TextDocument, position: Position, tcancel: vscode.CancellationToken): ProviderResult<vscode.DocumentHighlight[]> {
         let result: vscode.DocumentHighlight[] = [];
         let method = this._langGrammar.tokenizeMethod(document);
         let token = this._langGrammar.getTokenAtPosition(document, position);
@@ -164,6 +174,26 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
         }
         return result;
     }
+
+    public provideCompletionItems(document: TextDocument, position: Position, token: vscode.CancellationToken, context: vscode.CompletionContext): ProviderResult<vscode.CompletionItem[] | vscode.CompletionList>{
+        if ( context.triggerKind === vscode.CompletionTriggerKind.Invoke)
+        {
+            return new Promise((resolve) => {
+                let  token =  this._langGrammar.getTokenAtPosition(document,position);
+                if ( token  && token.token.scopes.length>2)
+                {
+
+                }
+                else
+                {
+                    resolve(this._commandsItem);
+                }
+                
+            });
+        }
+        return new Promise(()=>{});
+        
+    }
 }
 
 /**
@@ -172,7 +202,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
  *     - Hover symbol:
  *          * method  : find method in workspace (1)
  *          * command : have a cache of all available 4D command (2)
- *          * variable : must have a tree of definition (3)
+ *          * variable : must have a tree of definition (3) --> Method4D and Variable4D classes
  *          * unknown symbol: elsewhere (4)
  *    - Preparation:
  *          * list of all commands

@@ -6,8 +6,7 @@ import { Utils } from './utils';
 
 import * as d4lang from './languageDefinition'; 
 import {LangCache} from './languageCache';
-import { D4DefinitionProvider } from './languageProvider';
-import { ENGINE_METHOD_DIGESTS } from 'constants';
+
 
 //  function tool to retrieve a node module from vscode environnement
 function getCoreNodeModule(moduleName: string) : any{

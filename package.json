@@ -47,7 +47,7 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./ && cp ./syntaxes/4d.tmLanguage.json ./out/syntaxes/4d.tmLanguage.json",
+		"compile": "tsc -p ./ && cp ./syntaxes/4d.tmLanguage.json ./out/syntaxes/4d.tmLanguage.json && cp -R ./support/commands.txt ./out/support/commands.txt",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js"
