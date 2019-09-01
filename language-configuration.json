@@ -41,6 +41,7 @@
             "open": "(" , "close": ")"
         },
         { "open": "{" , "close": "}"},
+        { "open": "[" , "close": "]"},
         { "open": "for" , "close": "end for","notIn": ["string", "comment"]},
         { "open": "Begin SQL" , "close": "End SQL"},
         { "open": "'", "close": "'", "notIn": ["string", "comment"] },
