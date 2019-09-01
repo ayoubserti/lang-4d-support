@@ -448,7 +448,7 @@
 			"name": "constant.numeric.4d"
 		},
 		"boolean_values": {
-			"match": "(?i)(NULL|true|false(\\:C215)?)",
+			"match": "(?i)(NULL|true(\\:C214)?|false(\\:C215)?)",
 			"name": "constant.language.4d"
 		},
 		"parameters": {
