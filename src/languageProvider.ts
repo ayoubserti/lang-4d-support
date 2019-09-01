@@ -24,9 +24,17 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
         });
         readInterface.on('line', (line) => {
             this._commandsItem.push(new vscode.CompletionItem(line.trim(), vscode.CompletionItemKind.Method));
+
+        });
+        Utils.getProjectMethods().then((list) => {
+            list.forEach((elem_uri) => {
+                let d_ = elem_uri.fsPath.split("/");
+                let meth = d_[d_.length-1].replace(".4dm","");
+                this._commandsItem.push(new vscode.CompletionItem(meth.trim(),vscode.CompletionItemKind.Function));
+            });
         });
         //tokenize All method
-        this._langGrammar.TokenizeWorkSpaceMethode(); //asynchronous
+        this._langGrammar.TokenizeWorkSpaceMethode(); 
     }
 
     public provideDefinition(document: TextDocument, position: Position, token: vscode.CancellationToken): Thenable<Location> {

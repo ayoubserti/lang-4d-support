@@ -130,7 +130,6 @@ export class D4LanguageGrammar {
         });
     }
 
-
    public  getTokenAtPosition (document : vscode.TextDocument , position : vscode.Position ) : any{
         if ( document.languageId !=='4d'){
             return;
@@ -149,7 +148,6 @@ export class D4LanguageGrammar {
         }
     }
 
-    
     public  getUnknownToken( document: vscode.TextDocument): any{
         if ( document.languageId !=='4d'){
             return;
@@ -318,8 +316,6 @@ export class D4LanguageGrammar {
         return method;
     }
     
-    
-    
     public TokenizeWorkSpaceMethode() {
         Utils.getProjectMethods().then((methodList)=>{
             this._workspaceMethods= methodList;
@@ -329,12 +325,11 @@ export class D4LanguageGrammar {
                 //small hack.
                 vscode.workspace.openTextDocument(meth_uri).then((document)=>{
                     this.tokenizeMethod(document);
-                    
                 });
-                
-                
             });
         });
     }
-
+    public getMethodList(){
+        return this._workspaceMethods;
+    }
 }
