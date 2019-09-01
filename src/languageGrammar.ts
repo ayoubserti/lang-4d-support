@@ -2,10 +2,11 @@ import * as vscode from 'vscode';
 import * as tm from 'vscode-textmate';
 import * as fs from 'fs';
 import { IRawGrammar } from 'vscode-textmate';
-import { Utils } from './utils';
+import { Utils , mapString , mapType } from './utils';
 
 import * as d4lang from './languageDefinition'; 
 import {LangCache} from './languageCache';
+
 
 
 //  function tool to retrieve a node module from vscode environnement
@@ -208,29 +209,7 @@ export class D4LanguageGrammar {
     
     public tokenizeMethod( document : vscode.TextDocument) : d4lang.Method4D {
 
-        function mapType(stype : string) : d4lang.D4VariableType
-        {
-            let map : { [key : string ]: d4lang.D4VariableType } = { "longint" : d4lang.D4VariableType.eLONGINT,
-                        "real"    : d4lang.D4VariableType.eREAL,
-                        "text"    : d4lang.D4VariableType.eTEXT,
-                        "picture"    : d4lang.D4VariableType.ePICTIURE,
-                        "boolean"    : d4lang.D4VariableType.eBOOlEAN,
-                        "pointer"    : d4lang.D4VariableType.ePOINTER,
-                        "array_longint"    : d4lang.D4VariableType.eARRAY_LONGINT,
-                        "array_real"    : d4lang.D4VariableType.eARRAY_REAL,
-                        "array_text"    : d4lang.D4VariableType.eARRAY_TEXT,
-                        "array_boolean"    : d4lang.D4VariableType.eARRAY_BOOLEAN,
-                        "array_picture"    : d4lang.D4VariableType.eARRAY_PICTURE,
-                        "array_pointer"    : d4lang.D4VariableType.eARRAY_POINTER,
-                        "blob"    : d4lang.D4VariableType.eBLOB 
-                        //TODO: complete the list 
-                    };
-            if ( map[stype] !== undefined)
-            {
-                return map[stype];
-            }
-            return d4lang.D4VariableType.eUNKNOWN;
-        }
+       
         let method = new  d4lang.Method4D; 
         if ( document.languageId !=='4d'){
             throw new Error("It's not a 4D Method");            
@@ -273,6 +252,14 @@ export class D4LanguageGrammar {
                     //variable type
                     variable._type = mapType(matchtoken[1]);
                     method._variable_list.push(variable);
+                    if(variable._name.match(/\$[0-9]+/g))
+                    {
+                        //it's an argument
+                        let arg = new d4lang.Argument4D();
+                        arg._code = Number.parseInt(variable._name.substring(1));
+                        arg._type = variable._type;
+                        method._arguments.set(arg._code,arg);
+                    }
                 }
                 //tables
                 if(entry.scopes.includes("support.table.name.4d") )

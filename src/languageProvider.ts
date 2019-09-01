@@ -4,26 +4,28 @@ import { D4LanguageGrammar } from "./languageGrammar";
 import { Utils } from "./utils";
 import { LangCache } from './languageCache';
 import * as cat from './catalogDefinition';
-import * as readline from 'readline'
-import * as fs from 'fs'
-
-const readInterface = readline.createInterface({
-    input: fs.createReadStream(__dirname+'/support/commands.txt')
-    
-});
+import * as readline from 'readline';
+import * as fs from 'fs';
+import { mapString } from './utils';
 
 
-export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.HoverProvider, vscode.DocumentSymbolProvider, vscode.DocumentHighlightProvider,vscode.CompletionItemProvider {
+
+
+export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.HoverProvider, vscode.DocumentSymbolProvider, vscode.DocumentHighlightProvider, vscode.CompletionItemProvider, vscode.SignatureHelpProvider {
     private _langGrammar: D4LanguageGrammar;
-    private _commandsItem : vscode.CompletionItem[];
+    private _commandsItem: vscode.CompletionItem[];
 
     constructor(langGrammar?: D4LanguageGrammar) {
         this._langGrammar = langGrammar || new D4LanguageGrammar();
         this._commandsItem = [];
-        readInterface.on('line',(line) =>{
-                this._commandsItem.push(new vscode.CompletionItem(line.trim(),vscode.CompletionItemKind.Method));
+        const readInterface = readline.createInterface({
+            input: fs.createReadStream(__dirname + '/support/commands.txt')
+
         });
-        
+        readInterface.on('line', (line) => {
+            this._commandsItem.push(new vscode.CompletionItem(line.trim(), vscode.CompletionItemKind.Method));
+        });
+
     }
 
     public provideDefinition(document: TextDocument, position: Position, token: vscode.CancellationToken): Thenable<Location> {
@@ -87,40 +89,37 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
     public provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): ProviderResult<vscode.SymbolInformation[] | vscode.DocumentSymbol[]> {
 
         return new Promise((resolve, reject) => {
-            
+
             let method = this._langGrammar.tokenizeMethod(document);
             let syminfos: vscode.DocumentSymbol[] = [];
 
             if (document.fileName.toUpperCase().endsWith("COMPILER_METHODS.4DM")) {
                 //compiler_methods.4dm. 
                 // TYPE(method_name;variable_list)
-                for ( let i = 0; i< method._variable_list.length; ++i){
+                for (let i = 0; i < method._variable_list.length; ++i) {
                     let variable = method._variable_list[i];
                     let l = variable._line;
                     let sinfo = syminfos.find((elm) => {
-                        if( elm.name === variable._name)
-                        {
+                        if (elm.name === variable._name) {
                             return true;
                         }
                     });
-                    if ( sinfo === undefined){
+                    if (sinfo === undefined) {
                         let rg = new vscode.Range(variable._line, variable._column, variable._line, variable._column + variable._name.length);
                         sinfo = new vscode.DocumentSymbol(variable._name, "method", vscode.SymbolKind.Function, rg, rg);
                         syminfos.push(sinfo);
                     }
-                    
+
                     {
                         //check variable list
                         ++i;
                         let variable = method._variable_list[i];
-                        while( l === variable._line)
-                        {
+                        while (l === variable._line) {
                             let rg2 = new vscode.Range(variable._line, variable._column, variable._line, variable._column + variable._name.length);
                             let sinfo2 = new vscode.DocumentSymbol(variable._name, "variable", vscode.SymbolKind.Variable, rg2, rg2);
                             sinfo.children.push(sinfo2);
                             ++i;
-                            if ( i >=method._variable_list.length )
-                            {
+                            if (i >= method._variable_list.length) {
                                 break;
                             }
                             variable = method._variable_list[i];
@@ -175,24 +174,82 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
         return result;
     }
 
-    public provideCompletionItems(document: TextDocument, position: Position, token: vscode.CancellationToken, context: vscode.CompletionContext): ProviderResult<vscode.CompletionItem[] | vscode.CompletionList>{
-        if ( context.triggerKind === vscode.CompletionTriggerKind.Invoke)
-        {
+    public provideCompletionItems(document: TextDocument, position: Position, token: vscode.CancellationToken, context: vscode.CompletionContext): ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
+        if (context.triggerKind === vscode.CompletionTriggerKind.Invoke) {
             return new Promise((resolve) => {
-                let  token =  this._langGrammar.getTokenAtPosition(document,position);
-                if ( token  && token.token.scopes.length>2)
-                {
+                let token = this._langGrammar.getTokenAtPosition(document, position);
+                if (token && token.token.scopes.length > 2) {
 
                 }
-                else
-                {
+                else {
                     resolve(this._commandsItem);
                 }
-                
+
             });
         }
-        return new Promise(()=>{});
-        
+        return new Promise(() => { });
+
+    }
+
+    provideSignatureHelp(document: TextDocument, position: Position, token: vscode.CancellationToken, context: vscode.SignatureHelpContext): ProviderResult<vscode.SignatureHelp> {
+        return new Promise((resolve, reject) => {
+            if (context.triggerCharacter === '(') {
+                let pos = new Position(position.line, position.character - 1);
+                let token = this._langGrammar.getTokenAtPosition(document, pos); //get the token before the '('
+                if (token !== undefined) {
+                    let methods = LangCache.getMethods();
+                    let sig_helper = new vscode.SignatureHelp();
+                    sig_helper.activeParameter = 0;
+                    sig_helper.activeSignature = 0;
+                    //let sign = new vscode.SignatureInformation("1","this a function");
+
+                    let sign = new vscode.SignatureInformation(token.text.trim());
+
+                    methods.forEach((value, key, map) => {
+                        if (key.includes(token.text.trim())) {
+                            //is the right method ? TODO: double check that!!
+
+                            if (!value.acceptArgments()) {
+                                sig_helper.signatures.push(new vscode.SignatureInformation(token.text.trim() + "()"));
+                            }
+                            else {
+                                let sig_str = "";
+                                let method_type ="";
+                                value._arguments.forEach((elem) => {
+                                    if (elem._code !== 0) {
+                                        let param_info = new vscode.ParameterInformation("$" + elem._code);
+                                        sign.parameters.push(param_info);
+                                        if (sig_str === "") {
+                                            sig_str = token.text.trim() + "(" + mapString(elem._type);
+                                        }
+                                        else {
+                                            sig_str += " ; " + mapString(elem._type);
+                                        }
+                                    }
+                                    else{
+                                        method_type = mapString(elem._type);
+                                    }
+
+                                });
+                                sig_helper.signatures.push(sign);
+                                if (sig_str !== "") {
+                                    sig_str += ")";
+                                }
+                                if (method_type!==""){
+                                    sig_str += " : " +method_type;
+                                }
+                                sign.label = sig_str;
+
+                            }
+
+                            resolve(sig_helper);
+                        }
+                    });
+
+                }
+            }
+
+        });
     }
 }
 
@@ -205,7 +262,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
  *          * variable : must have a tree of definition (3) --> Method4D and Variable4D classes
  *          * unknown symbol: elsewhere (4)
  *    - Preparation:
- *          * list of all commands
+ *          * list of all commands  --> support/commands.txt
  *          * list of constant
  *          * list of methods in workspace (Utils.getProjectMethods)
  */
