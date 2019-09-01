@@ -25,7 +25,8 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
         readInterface.on('line', (line) => {
             this._commandsItem.push(new vscode.CompletionItem(line.trim(), vscode.CompletionItemKind.Method));
         });
-
+        //tokenize All method
+        this._langGrammar.TokenizeWorkSpaceMethode(); //asynchronous
     }
 
     public provideDefinition(document: TextDocument, position: Position, token: vscode.CancellationToken): Thenable<Location> {
@@ -201,8 +202,6 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                     let sig_helper = new vscode.SignatureHelp();
                     sig_helper.activeParameter = 0;
                     sig_helper.activeSignature = 0;
-                    //let sign = new vscode.SignatureInformation("1","this a function");
-
                     let sign = new vscode.SignatureInformation(token.text.trim());
 
                     methods.forEach((value, key, map) => {

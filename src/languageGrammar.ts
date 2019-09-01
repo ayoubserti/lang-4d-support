@@ -319,6 +319,22 @@ export class D4LanguageGrammar {
     }
     
     
-
+    
+    public TokenizeWorkSpaceMethode() {
+        Utils.getProjectMethods().then((methodList)=>{
+            this._workspaceMethods= methodList;
+            methodList.forEach((meth_uri)=>{
+                //there is no API to get document from URI
+                // let's load document. The best way is to create a class that implemnt TextDocument Interface
+                //small hack.
+                vscode.workspace.openTextDocument(meth_uri).then((document)=>{
+                    this.tokenizeMethod(document);
+                    
+                });
+                
+                
+            });
+        });
+    }
 
 }
