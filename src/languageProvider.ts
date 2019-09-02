@@ -208,7 +208,6 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                 if (token !== undefined) {
                     let methods = LangCache.getMethods();
                     let sig_helper = new vscode.SignatureHelp();
-                    sig_helper.activeParameter = 0;
                     sig_helper.activeSignature = 0;
                     let sign = new vscode.SignatureInformation(token.text.trim());
 
@@ -245,6 +244,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                                 if (method_type!==""){
                                     sig_str += " : " +method_type;
                                 }
+                                sig_helper.activeParameter = 1;
                                 sign.label = sig_str;
 
                             }
