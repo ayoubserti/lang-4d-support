@@ -19,6 +19,7 @@ build:
     - /^testing/.*$/
 
 deploy:
+  stage: deploy
   before_script:
     - npm i -g vsce
   script:
