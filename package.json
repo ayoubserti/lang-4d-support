@@ -3,6 +3,7 @@
 	"displayName": "lang-4d-support",
 	"description": "VS Code extension for supporting 4D language",
 	"version": "0.0.1",
+	"publisher": "aybserti",
 	"engines": {
 		"vscode": "^1.36.1"
 	},
