@@ -52,7 +52,7 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
-		"copyfile": "cp ./syntaxes/4d.tmLanguage.json ./out/syntaxes/4d.tmLanguage.json && cp -R ./support/commands.txt ./out/support/commands.txt"
+		"copyfile": "node ./tools/postbuild.js"
 		
 	},
 	"devDependencies": {
