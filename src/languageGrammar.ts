@@ -6,7 +6,10 @@ import { Utils , mapString , mapType } from './utils';
 
 import * as d4lang from './languageDefinition'; 
 import {LangCache} from './languageCache';
+import {resolve} from 'path';
+import {promisify} from "util";
 
+const readFile$ = promisify(fs.readFile);
 
 
 //  function tool to retrieve a node module from vscode environnement
@@ -25,12 +28,6 @@ function getCoreNodeModule(moduleName: string) : any{
 
 const onigurumaModule = getCoreNodeModule('oniguruma');
 
-//ReadFile asynchronously 
-function readFile(path: string) :Thenable<any> {
-    return new Promise((resolve, reject) => {
-        fs.readFile(path, (error, data) => error ? reject(error) : resolve(data));
-    });
-}
 
 
 /**
@@ -62,8 +59,8 @@ class D4GrammerRegister implements tm.RegistryOptions
 	public loadGrammar(scopeName: string): any{
 
 		if (scopeName === 'source.4dm') {
-				return readFile(__dirname+'/syntaxes/4d.tmLanguage.json').then((data: Buffer)  :tm.IRawGrammar => {
-                    return tm.parseRawGrammar(data.toString(),__dirname+'/syntaxes/4d.tmLanguage.json');
+				return readFile$(resolve( __dirname ,'syntaxes/4d.tmLanguage.json')).then((data: Buffer)  :tm.IRawGrammar => {
+                    return tm.parseRawGrammar(data.toString(),resolve(__dirname,'syntaxes/4d.tmLanguage.json'));
 
                 }).then((gram: IRawGrammar)  :Thenable<any>=> {
 					return new Promise((resolve,reject) => {
@@ -74,11 +71,9 @@ class D4GrammerRegister implements tm.RegistryOptions
         console.log(`Unknown scope name: ${scopeName}`);
         return;
 	}
-	public getOnigLib() : Thenable<tm.IOnigLib>
+	public async getOnigLib() : Promise<tm.IOnigLib>
 	{
-		return new Promise((resolve ) => {
-			resolve(new OnigLibImpl());
-		});
+        return new OnigLibImpl();
 	}
 }
 

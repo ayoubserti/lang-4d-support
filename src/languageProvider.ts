@@ -7,6 +7,7 @@ import * as cat from './catalogDefinition';
 import * as readline from 'readline';
 import * as fs from 'fs';
 import { mapString } from './utils';
+import {resolve,normalize,basename} from 'path';
 
 
 
@@ -19,7 +20,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
         this._langGrammar = langGrammar || new D4LanguageGrammar();
         this._commandsItem = [];
         const readInterface = readline.createInterface({
-            input: fs.createReadStream(__dirname + '/support/commands.txt')
+            input: fs.createReadStream(resolve(__dirname , 'support/commands.txt'))
 
         });
         readInterface.on('line', (line) => {
@@ -28,8 +29,8 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
         });
         Utils.getProjectMethods().then((list) => {
             list.forEach((elem_uri) => {
-                let d_ = elem_uri.fsPath.split("/");
-                let meth = d_[d_.length-1].replace(".4dm","");
+                let d_ = normalize(elem_uri.fsPath);
+                let meth = basename(d_,".4dm");
                 this._commandsItem.push(new vscode.CompletionItem(meth.trim(),vscode.CompletionItemKind.Function));
             });
         });
