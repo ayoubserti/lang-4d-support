@@ -12,6 +12,7 @@ build:
     - mkdir out/syntaxes
     - mkdir out/support
     - npm run compile
+    - npm run copyfile
   only:
     - master
     - develop
