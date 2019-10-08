@@ -1,6 +1,7 @@
 cache:
   paths:
   - node_modules/
+  - out/
 
 stages:
   - deploy
@@ -9,8 +10,6 @@ build:
   stage: deploy
   script:
     - npm install
-    - mkdir out/syntaxes
-    - mkdir out/support
     - npm run compile
     - npm run copyfile
   only:
