@@ -29,4 +29,4 @@ deploy:
     - master
   artifacts:
     paths:
-    - out
+    - lang-4d-support-0.0.1.vsix
