@@ -44,7 +44,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
             //check if it's a variable in method
             let done = false;
             let token = this._langGrammar.getTokenAtPosition(document, position);
-            let method = LangCache.getMethods().get(document.fileName);
+            let method = LangCache.getMethods().get(document.uri.path);
             if (method) {
                 let method_path = method._name;
                 method._variable_list.forEach((variable) => {

@@ -208,7 +208,7 @@ export class D4LanguageGrammar {
             throw new Error("It's not a 4D Method");            
         }
         let gram : tm.IGrammar = this._grammar as tm.IGrammar;
-        method._name = document.fileName;
+        method._name = document.uri.path;
         let line_count = document.lineCount;
         let rule_stack = tm.INITIAL;
         for (let i = 0; i< line_count; i++){
@@ -262,7 +262,7 @@ export class D4LanguageGrammar {
                        method._table_list.push(token_text);
                     }
                 }
-                //declared variable by asseignement
+                //declared variable by assignement
                 if (entry.scopes.includes("meta.block.affectation.4d") && entry.scopes.includes("variable.name.4d"))
                 {
                     let variable = method._variable_list.find((elem)=> {
