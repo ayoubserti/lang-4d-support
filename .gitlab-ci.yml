@@ -15,8 +15,8 @@ build:
   only:
     - master
     - develop
-    - /^release/.*$/
-    - /^testing/.*$/
+    - /^feature/.*$/
+    - /^fix/.*$/
 
 deploy:
   stage: deploy
