@@ -4,8 +4,8 @@ import * as vscode from 'vscode';
 import { D4LanguageGrammar} from './languageGrammar';
 import { D4DefinitionProvider} from './languageProvider';
 import {content} from './templating';
-import { mkdir,copyFile} from 'fs';
-import {resolve,basename, dirname} from 'path';
+import { mkdir,copyFile, writeFile} from 'fs';
+import {resolve,basename} from 'path';
 import {promisify} from "util";
 
 interface IFileTemplating {
@@ -30,13 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
 	  }
 	let disp_create_project = vscode.commands.registerCommand('extension.create_4d_project',async () => {
 		const result = await _openDialogForFolder();
+		let mkdir$ = promisify(mkdir);
 		if ( result && result.fsPath){
 			await vscode.commands.executeCommand('vscode.openFolder',result);
 
 			//folder
 			content.dir.forEach(async (elm:string) => {
 				try{
-					await promisify(mkdir)(resolve(result.fsPath,elm));
+					await mkdir$(resolve(result.fsPath,elm));
 				}catch(err)
 				{
 					console.error(err);
@@ -49,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 					let name :string= elm.target;
 					if( elm.changeName )
 					{
-						let bname = basename(result.fsPath)
+						let bname = basename(result.fsPath);
 						name = name.replace("<name>",bname);
 					}
 					let copyFile$ = promisify(copyFile);
@@ -62,6 +63,20 @@ export function activate(context: vscode.ExtensionContext) {
 					console.error(err);
 				}
 			});
+
+			// .vscode folder
+			mkdir$(resolve(result.fsPath,".vscode"));
+			let writeFile$ = promisify(writeFile);
+
+			try{
+				await writeFile$(resolve(result.fsPath,".vscode","tasks.json"),JSON.stringify(content.tasks,null,4),);
+				await writeFile$(resolve(result.fsPath,".vscode","launch.json"),JSON.stringify(content.launch,null,4));
+			}
+			catch(err)
+			{
+				console.error(err);
+			}
+			
 
 		}
 		
