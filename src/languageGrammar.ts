@@ -163,6 +163,11 @@ export class D4LanguageGrammar {
             let tokens = result.tokens;
             for( let entry of tokens)
             {
+                let txt = document.getText(new vscode.Range(i,entry.startIndex,i,entry.endIndex));
+                if( Utils.commandList.includes(txt)) {
+                    continue;
+                }
+
                 if ( entry.scopes.length < 2 && (entry.startIndex !== entry.endIndex))
                 {
                     let startlineChar = lineText.range.start.character;

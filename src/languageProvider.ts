@@ -24,6 +24,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
 
         });
         readInterface.on('line', (line) => {
+            Utils.commandList.push(line);
             this._commandsItem.push(new vscode.CompletionItem(line.trim(), vscode.CompletionItemKind.Method));
 
         });
