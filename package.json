@@ -20,7 +20,7 @@
 		"commands": [
 			{
 				"command": "extension.create_4d_project",
-				"title": "New 4D Project"
+				"title": "4D: New 4D Project"
 			}
 		],
 		"languages": [
