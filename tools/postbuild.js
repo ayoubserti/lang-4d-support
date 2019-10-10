@@ -1,9 +1,9 @@
 const { promisify } = require('util');
 const { resolve } = require('path');
-const { copyFile, existsSync, mkdirSync } = require('fs');
+const { copyFile, existsSync, mkdirSync,readdir } = require('fs');
 
 const copyFile$ = promisify(copyFile);
-
+const readdir$  = promisify(readdir);
 (async () => {
     if (!existsSync( resolve(__dirname, '../out/syntaxes'))){
         mkdirSync(resolve(__dirname, '../out/syntaxes'));
@@ -19,4 +19,14 @@ const copyFile$ = promisify(copyFile);
         resolve(__dirname, '../support/commands.txt'),
         resolve(__dirname, '../out/support/commands.txt'),
     );
+    
+    let source_path = resolve(__dirname, '../template/')
+    let files = await readdir$(source_path);
+    if (!existsSync( resolve(__dirname, '../out/template'))){
+        mkdirSync(resolve(__dirname, '../out/template'));
+    }
+    files.forEach(async (elm)=>{
+        await copyFile$(resolve(source_path,elm), resolve(__dirname,'../out/template/',elm));
+    });
+    
 })();

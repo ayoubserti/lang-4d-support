@@ -12,14 +12,15 @@
 		"Linters"
 	],
 	"activationEvents": [
-		"onLanguage:4d"
+		"onLanguage:4d",
+		"onCommand:extension.create_4d_project"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "extension.create_4d_project",
+				"title": "New 4D Project"
 			}
 		],
 		"languages": [
