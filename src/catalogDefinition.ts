@@ -1,18 +1,13 @@
 import * as xml from "fast-xml-parser";
-import * as fs from "fs";
+import { readFile } from 'fs';
 import * as vscode from "vscode";
+import {promisify} from 'util';
 /**
  * catalog Definition.
  * Provide the catalog definition
  */
 
-//ReadFile asynchronously 
-function readFile(path: string): Thenable<any> {
-    return new Promise((resolve, reject) => {
-        fs.readFile(path, (error, data) => error ? reject(error) : resolve(data));
-    });
-}
-
+const readFile$ = promisify(readFile);
 export interface D4Table {
     _name: string;
     _field_list: Array<string>;
@@ -31,7 +26,7 @@ class Catalog {
     public refresh(): Promise<Array<D4Table>> {
 
         return new Promise((resolve, reject) => {
-            readFile(this._filename).then((data: Buffer) => {
+            readFile$(this._filename).then((data: Buffer) => {
                 var options = {
                     attributeNamePrefix: "@_",
                     attrNodeName: "attr", //default is 'false'

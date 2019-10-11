@@ -3,95 +3,25 @@
 import * as vscode from 'vscode';
 import { D4LanguageGrammar} from './languageGrammar';
 import { D4DefinitionProvider} from './languageProvider';
-import {content} from './templating';
-import { mkdir,copyFile, writeFile} from 'fs';
-import {resolve,basename} from 'path';
-import {promisify} from "util";
+import { Commands} from './commands';
 
-interface IFileTemplating {
-	readonly source : string;
-	readonly target : string;
-	readonly changeName? : boolean;
-}
+
 export function activate(context: vscode.ExtensionContext) {
 	
-	async function _openDialogForFolder(): Promise<vscode.Uri | undefined> {
-		const options: vscode.OpenDialogOptions = {
-		  canSelectFiles: false,
-		  canSelectFolders: true,
-		  canSelectMany: false,
-		};
-	  
-		const result: vscode.Uri[] | undefined = await vscode.window.showOpenDialog(options);
-		if (result) {
-		  return Promise.resolve(result[0]);
-		}
-		return Promise.resolve(undefined);
-	}
-
-	let disp_create_project = vscode.commands.registerCommand('extension.create_4d_project',async () => {
-		const result = await _openDialogForFolder();
-		let mkdir$ = promisify(mkdir);
-		if ( result && result.fsPath){
-			await vscode.commands.executeCommand('vscode.openFolder',result);
-
-			//folder
-			content.dir.forEach(async (elm:string) => {
-				try{
-					await mkdir$(resolve(result.fsPath,elm));
-				}catch(err)
-				{
-					console.error(err);
-				}
-			});
-
-			//files
-			content.files.forEach(async(elm : IFileTemplating) => {
-				try{
-					let name :string= elm.target;
-					if( elm.changeName )
-					{
-						let bname = basename(result.fsPath);
-						name = name.replace("<name>",bname);
-					}
-					let copyFile$ = promisify(copyFile);
-					let sourcePath = resolve(__dirname,"template",elm.source);
-					let targetPath = resolve(result.fsPath,name);
-					await copyFile$(sourcePath,targetPath);
-				}
-				catch(err)
-				{
-					console.error(err);
-				}
-			});
-
-			// .vscode folder
-			mkdir$(resolve(result.fsPath,".vscode"));
-			let writeFile$ = promisify(writeFile);
-
-			try{
-				await writeFile$(resolve(result.fsPath,".vscode","tasks.json"),JSON.stringify(content.tasks,null,4),);
-				await writeFile$(resolve(result.fsPath,".vscode","launch.json"),JSON.stringify(content.launch,null,4));
-			}
-			catch(err)
-			{
-				console.error(err);
-			}
-			
-		}
-	});
 	
 	let langGrammar = new D4LanguageGrammar();
 	let langProvider : D4DefinitionProvider = new D4DefinitionProvider(langGrammar);
 	 
-	context.subscriptions.push(disp_create_project);
+	
+	context.subscriptions.push(Commands.create_Project);
+	context.subscriptions.push(Commands.create_project_method);
+	context.subscriptions.push(Commands.create_database_method);
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider("4d",langProvider));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentHighlightProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider("4d",  langProvider,'(', ';'));
-	
 	
 	//linter
 	let diagnosticCollection = vscode.languages.createDiagnosticCollection();
