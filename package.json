@@ -14,7 +14,8 @@
 	"activationEvents": [
 		"onLanguage:4d",
 		"onCommand:extension.create_4d_project",
-		"onCommand:extension.create_project_method"
+		"onCommand:extension.create_project_method",
+		"onCommand:extension.create_database_method"
 	],
 	"main": "./out/extension.js",
 	"contributes": {

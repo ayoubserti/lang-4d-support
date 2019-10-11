@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import {content} from './templating';
-import { mkdir,copyFile, writeFile} from 'fs';
-import {resolve,basename,normalize} from 'path';
+import { mkdir,copyFile, writeFile,existsSync} from 'fs';
+import {resolve,basename} from 'path';
 import {promisify} from "util";
 import slash = require('slash');
 
@@ -102,4 +102,30 @@ export namespace Commands{
         }
         
     });
+
+     //command database method
+     export const create_database_method = vscode.commands.registerCommand('extension.create_database_method', async() => {
+            try{
+                let proj_path = vscode.workspace.rootPath || '';
+                const res = await vscode.window.showQuickPick(['onStartup','onExit','onBackupShutdown','onBackupStartup','onDrop',
+                'onHostDatabaseEvent','onMobileAppAction','onMobileAppAuthentication'
+                 ,'onRESTAuthentication','onServerCloseConnection','onServerOpenConnection',
+                 'onServerShutdown','onServerStartup','onSqlAuthentication','onSystemEvent'
+                 ,'onWebAuthentication','onWebConnection','onWebSessionSuspend']);
+
+            if ((proj_path !== '')  && (res !== undefined)){
+               
+                let path = resolve(proj_path,'Project/Sources/DatabaseMethods',res + '.4dm');
+                if ( !existsSync(path) ){
+                    await writeFile$(path, ""); 
+                }
+                let document =  await vscode.workspace.openTextDocument(path);
+                vscode.window.showTextDocument(document);
+            }
+            }
+            catch(err)
+            {
+                console.error(err);
+            }
+     });
 }

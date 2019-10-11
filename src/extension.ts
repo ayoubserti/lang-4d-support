@@ -15,6 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	context.subscriptions.push(Commands.create_Project);
 	context.subscriptions.push(Commands.create_project_method);
+	context.subscriptions.push(Commands.create_database_method);
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider("4d",langProvider));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("4d",  langProvider));
