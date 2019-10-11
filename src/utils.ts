@@ -14,6 +14,7 @@ export class Utils {
         return list;
     }
 
+    static commandList : Array<String> = [];
 }
 const _MapTypeToCode  : { [key : string ]: d4lang.D4VariableType } = { 
         "longint" : d4lang.D4VariableType.eLONGINT,

@@ -12,14 +12,15 @@
 		"Linters"
 	],
 	"activationEvents": [
-		"onLanguage:4d"
+		"onLanguage:4d",
+		"onCommand:extension.create_4d_project"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "extension.create_4d_project",
+				"title": "4D: New 4D Project"
 			}
 		],
 		"languages": [
@@ -42,6 +43,23 @@
 				"path": "./syntaxes/4d.tmLanguage.json",
 				"embeddedLanguages": {
 					"meta.embedded.block.javascript": "source.js"
+				}
+			}
+		],
+		"configuration" :[
+			{
+				"title": "4D",
+				"properties": {
+					"4d.programPath" : {
+						"type" : "string",
+						"default" : "",
+						"description": " Path of 4D executable"
+					},
+					"4d.builderPath" :{
+						"type" :"string",
+						"default" : "",
+						"description": "path of 4D builder"
+					}
 				}
 			}
 		]
