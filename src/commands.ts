@@ -3,7 +3,6 @@ import {content} from './templating';
 import { mkdir,copyFile, writeFile,existsSync} from 'fs';
 import {resolve,basename} from 'path';
 import {promisify} from "util";
-import slash = require('slash');
 
 const writeFile$ = promisify(writeFile);
 const copyFile$ = promisify(copyFile);
