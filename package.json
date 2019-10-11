@@ -45,6 +45,23 @@
 					"meta.embedded.block.javascript": "source.js"
 				}
 			}
+		],
+		"configuration" :[
+			{
+				"title": "4D",
+				"properties": {
+					"4d.programPath" : {
+						"type" : "string",
+						"default" : "",
+						"description": " Path of 4D executable"
+					},
+					"4d.builderPath" :{
+						"type" :"string",
+						"default" : "",
+						"description": "path of 4D builder"
+					}
+				}
+			}
 		]
 	},
 	"scripts": {

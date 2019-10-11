@@ -27,7 +27,8 @@ export function activate(context: vscode.ExtensionContext) {
 		  return Promise.resolve(result[0]);
 		}
 		return Promise.resolve(undefined);
-	  }
+	}
+
 	let disp_create_project = vscode.commands.registerCommand('extension.create_4d_project',async () => {
 		const result = await _openDialogForFolder();
 		let mkdir$ = promisify(mkdir);
@@ -77,11 +78,9 @@ export function activate(context: vscode.ExtensionContext) {
 				console.error(err);
 			}
 			
-
 		}
-		
-
 	});
+	
 	let langGrammar = new D4LanguageGrammar();
 	let langProvider : D4DefinitionProvider = new D4DefinitionProvider(langGrammar);
 	 
