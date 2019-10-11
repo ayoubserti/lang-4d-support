@@ -1,15 +1,15 @@
 import * as vscode from 'vscode';
 import * as tm from 'vscode-textmate';
-import * as fs from 'fs';
+import { readFile } from 'fs';
 import { IRawGrammar } from 'vscode-textmate';
-import { Utils , mapString , mapType } from './utils';
+import { Utils , mapType } from './utils';
 
 import * as d4lang from './languageDefinition'; 
 import {LangCache} from './languageCache';
 import {resolve} from 'path';
 import {promisify} from "util";
 
-const readFile$ = promisify(fs.readFile);
+const readFile$ = promisify(readFile);
 
 
 //  function tool to retrieve a node module from vscode environnement
@@ -47,11 +47,6 @@ class OnigLibImpl implements tm.IOnigLib
 		string.content = sources;
 		return string;
 	}
-}
-
-function callback(data: Buffer) : tm.IRawGrammar{
-	return tm.parseRawGrammar(data.toString());
-	
 }
 
 class D4GrammerRegister implements tm.RegistryOptions

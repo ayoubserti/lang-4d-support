@@ -22,7 +22,19 @@ export namespace content {
     export const launch: any = {
         version: '0.2.0',
         configuration: [
-            { name: 'launchProject' }
+            {
+                name: "Compile Project",
+                type: "4d",
+                request: "launch",
+                "runtimeExecutable": "${execPath}",
+                "args": [
+                    "--extensionDevelopmentPath=${workspaceFolder}"
+                ],
+                "outFiles": [
+                    "${workspaceFolder}/out/**/*.js"
+                ],
+                "preLaunchTask": "npm: watch"
+            },
         ]
     };
 
