@@ -92,7 +92,7 @@ export namespace Commands{
                 let path = resolve(proj_path,'Project/Sources/Methods',method_name + '.4dm');
                 await writeFile$(path, "//%attributes = {}"); //maybe add method header
                 let document =  await vscode.workspace.openTextDocument(path);
-                vscode.window.showTextDocument(document);
+                await vscode.window.showTextDocument(document);
             }
         }
         catch(err)
@@ -119,7 +119,7 @@ export namespace Commands{
                     await writeFile$(path, ""); 
                 }
                 let document =  await vscode.workspace.openTextDocument(path);
-                vscode.window.showTextDocument(document);
+                await vscode.window.showTextDocument(document);
             }
             }
             catch(err)

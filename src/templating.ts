@@ -6,13 +6,28 @@ export namespace content {
     export const tasks: any = {
         version: "2.0.0", tasks: [
             {
-                type: "shell",
-                label: "build",
-                group: {
-                    kind: "build",
-                    isDefault: true
-                },
-
+                // See https://go.microsoft.com/fwlink/?LinkId=733558
+                // for the documentation about the tasks.json format
+                "version": "2.0.0",
+                "tasks": [
+                    {
+                        "label": "Build",
+                        "type": "shell",
+                        "group": "build",
+                        "osx": {
+                            "command": "/Users/mac/Desktop/tool4d.app/Contents/MacOS/4D", //TODO: to be changed
+                            "args": [
+                                "--headless",
+                                "-s",
+                                "${workspaceFolder}/Project/builder.4DProject",
+                                "--data-less",
+                                "--user-data",
+                                "{\"makeFile\":\"${workspaceFolder}/make.json\",\"verbose\":true,\"config\":\"release\"}"
+                            ]
+                        },
+                        "problemMatcher": []
+                    }
+                ]
             }
 
         ]
