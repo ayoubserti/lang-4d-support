@@ -36,19 +36,18 @@ export namespace Commands{
         
         if ( result && result.fsPath){
             await vscode.commands.executeCommand('vscode.openFolder',result);
-    
+            
             //folder
-            content.dir.forEach(async (elm:string) => {
+            for (let elm of content.dir){
                 try{
                     await mkdir$(resolve(result.fsPath,elm));
                 }catch(err)
                 {
                     console.error(err);
                 }
-            });
-    
+            }    
             //files
-            content.files.forEach(async(elm : IFileTemplating) => {
+            for ( let elm of content.files){
                 try{
                     let name :string= elm.target;
                     if( elm.changeName )
@@ -64,7 +63,8 @@ export namespace Commands{
                 {
                     console.error(err);
                 }
-            });
+            }
+    
     
             // .vscode folder
             mkdir$(resolve(result.fsPath,".vscode"));

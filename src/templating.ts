@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 import {resolve} from 'path';
 const config = vscode.workspace.getConfiguration("4d");
 
-
 export namespace content {
 
     // ".vscode/tasks.json"
@@ -13,18 +12,38 @@ export namespace content {
                 // See https://go.microsoft.com/fwlink/?LinkId=733558
                 // for the documentation about the tasks.json format
                 "label": "Build",
-                "type": "shell",
+                "type": "process",
                 "group": "build",
-                "command": config.get("programPath"),
+                "command": (config.get("programPath")+"").trim(),
                 "args": [
                     "--headless",
                     "-s",
-                    config.get("builderPath"),
+                    (config.get("builderPath")+"").trim(),
                     "--dataless",
                     "--user-param",
-                    "{\\\"makeFile\\\":\\\"${workspaceFolder}\\make.json\\\",\\\"verbose\\\":true,\\\"config\\\":\\\"release\\\"}"
+                    "{\"makeFile\":\"${workspaceFolder}/make.json\",\"verbose\":true,\"config\":\"release\"}"
                 ],
-                "problemMatcher": ["$msCompile"]
+                "windows" :{
+                    "args" :[
+                        "--headless",
+                        "-s",
+                        (config.get("builderPath")+"").trim(),
+                        "--dataless",
+                        "--user-param",
+                        "{\\\"makeFile\\\":\\\"${workspaceFolder}\\make.json\\\",\\\"verbose\\\":true,\\\"config\\\":\\\"release\\\"}",
+                    ]
+                },
+                "problemMatcher":{
+                    "owner":"4d",
+                     "fileLocation":"absolute",
+                     "pattern": {
+                         "regexp": "^(.*):(\\d*):\\s+(warning|error|note):\\s+(.*)$",
+                         "file": 1,
+                         "line": 2,
+                         "severity": 3,
+                         "message": 4
+                     }
+                 } 
             }
 
         ]
