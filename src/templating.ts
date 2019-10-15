@@ -1,7 +1,15 @@
 'use strict';
 import * as vscode from 'vscode';
-import {resolve} from 'path';
+
 const config = vscode.workspace.getConfiguration("4d");
+let patternMatch ="";
+if (process.platform ==="darwin"){
+     patternMatch = "^(.*):(\\d*):\\s+(warning|error|note):\\s+(.*)$";
+}
+else
+{
+     patternMatch = "^(.*)\\((\\d*)\\):\\s+(warning|error|note):\\s+(.*)$";
+}
 
 export namespace content {
 
@@ -37,7 +45,7 @@ export namespace content {
                     "owner":"4d",
                      "fileLocation":"absolute",
                      "pattern": {
-                         "regexp": "^(.*):(\\d*):\\s+(warning|error|note):\\s+(.*)$",
+                         "regexp": patternMatch,
                          "file": 1,
                          "line": 2,
                          "severity": 3,
