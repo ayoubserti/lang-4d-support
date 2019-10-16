@@ -61,15 +61,26 @@ export namespace content {
                 "args": [
                     "--headless",
                     "-s",
-                    "${workspaceFolder}/Project/${workspaceFolderBasename}.4DProject"
+                    "${workspaceFolder}/Project/${workspaceFolderBasename}.4DProject",
+                    "${input:optionsRun}"
                 ],
                 "windows": {
                     "args": [
                         "--headless",
                         "-s",
-                        "${workspaceFolder}\\Project\\${workspaceFolderBasename}.4DProject"
+                        "${workspaceFolder}\\Project\\${workspaceFolderBasename}.4DProject",
+                        "${input:optionsRun}"
                     ]
                 }
+            }
+        ],
+        "inputs": [
+            {
+                "id": "optionsRun",
+                "type": "pickString",
+                "options": ["--create-data", "--dataless", ""],
+                "default": "",
+                "description": "Data option"
             }
         ]
     };
