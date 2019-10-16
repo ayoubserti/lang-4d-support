@@ -80,7 +80,7 @@ export namespace content {
                 "type": "pickString",
                 "options": ["--create-data", "--dataless", ""],
                 "default": "",
-                "description": "Data option"
+                "description": "Data options"
             }
         ]
     };
