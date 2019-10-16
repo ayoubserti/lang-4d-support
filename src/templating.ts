@@ -1,7 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
 
-const config = vscode.workspace.getConfiguration("4d");
 let patternMatch ="";
 if (process.platform ==="darwin"){
      patternMatch = "^(.*):(\\d*):\\s+(warning|error|note):\\s+(.*)$";
@@ -22,11 +21,11 @@ export namespace content {
                 "label": "Build",
                 "type": "process",
                 "group": "build",
-                "command": (config.get("programPath")+"").trim(),
+                "command": "${config:4d.programPath}",
                 "args": [
                     "--headless",
                     "-s",
-                    (config.get("builderPath")+"").trim(),
+                    "${config:4d.builderPath}",
                     "--dataless",
                     "--user-param",
                     "{\"makeFile\":\"${workspaceFolder}/make.json\",\"verbose\":true,\"config\":\"release\"}"
@@ -35,7 +34,7 @@ export namespace content {
                     "args" :[
                         "--headless",
                         "-s",
-                        (config.get("builderPath")+"").trim(),
+                        "${config:4d.builderPath}",
                         "--dataless",
                         "--user-param",
                         "{\\\"makeFile\\\":\\\"${workspaceFolder}\\make.json\\\",\\\"verbose\\\":true,\\\"config\\\":\\\"release\\\"}",
@@ -52,8 +51,24 @@ export namespace content {
                          "message": 4
                      }
                  } 
+            },
+            {
+                "label": "Run",
+                "type": "process",
+                "command": "${config:4d.programPath}",
+                "args": [
+                    "--headless",
+                    "-s",
+                    "${workspaceFolder}/Project/${workspaceFolderBasename}.4DProject"
+                ],
+                "windows": {
+                    "args": [
+                        "--headless",
+                        "-s",
+                        "${workspaceFolder}\\Project\\${workspaceFolderBasename}.4DProject"
+                    ]
+                }
             }
-
         ]
     };
 
