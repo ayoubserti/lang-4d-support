@@ -1,6 +1,8 @@
 'use strict';
-import * as vscode from 'vscode';
 
+//workaround. waiting for a new VSCode release that integrate:
+// https://github.com/microsoft/vscode/issues/59023
+//@discuss: more easy we can add new attribute to builder param to specify error format
 let patternMatch ="";
 if (process.platform ==="darwin"){
      patternMatch = "^(.*):(\\d*):\\s+(warning|error|note):\\s+(.*)$";
