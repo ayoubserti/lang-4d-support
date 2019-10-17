@@ -71,7 +71,18 @@ export namespace content {
                         "${workspaceFolder}\\Project\\${workspaceFolderBasename}.4DProject",
                         "${input:optionsRun}"
                     ]
-                }
+                },
+                "problemMatcher":{
+                    "owner":"4d",
+                     "fileLocation":"absolute",
+                     "pattern": {
+                         "regexp": patternMatch,
+                         "file": 1,
+                         "line": 2,
+                         "severity": 3,
+                         "message": 4
+                     }
+                 } 
             }
         ],
         "inputs": [
