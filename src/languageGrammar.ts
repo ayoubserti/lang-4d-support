@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import * as tm from 'vscode-textmate';
 import { readFile } from 'fs';
-import { IRawGrammar } from 'vscode-textmate';
 import { Utils , mapType } from './utils';
 
 import * as d4lang from './languageDefinition'; 
@@ -15,11 +14,12 @@ const readFile$ = promisify(readFile);
 //  function tool to retrieve a node module from vscode environnement
 function getCoreNodeModule(moduleName: string) : any{
 	try {
-	  return require(`${vscode.env.appRoot}/node_modules.asar/${moduleName}`);
+	  return eval('require')(`${vscode.env.appRoot}/node_modules.asar/${moduleName}`);
 	} catch (err) { }
 	
 	try {
-	  return require(`${vscode.env.appRoot}/node_modules/${moduleName}`);
+        
+	  return eval('require')(`${vscode.env.appRoot}/node_modules/${moduleName}`);
 	} catch (err) { }
 	
 	return null;
@@ -57,7 +57,7 @@ class D4GrammerRegister implements tm.RegistryOptions
 				return readFile$(resolve( __dirname ,'syntaxes/4d.tmLanguage.json')).then((data: Buffer)  :tm.IRawGrammar => {
                     return tm.parseRawGrammar(data.toString(),resolve(__dirname,'syntaxes/4d.tmLanguage.json'));
 
-                }).then((gram: IRawGrammar)  :Thenable<any>=> {
+                }).then((gram: tm.IRawGrammar)  :Thenable<any>=> {
 					return new Promise((resolve,reject) => {
 							resolve(gram);
 					});
