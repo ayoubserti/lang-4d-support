@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerHoverProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentHighlightProvider("4d",  langProvider));
-	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("4d",  langProvider));
+	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("4d",  langProvider,'.', " "));
 	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider("4d",  langProvider,'(', ';'));
 	
 	//linter

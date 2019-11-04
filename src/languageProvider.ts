@@ -8,6 +8,7 @@ import * as readline from 'readline';
 import * as fs from 'fs';
 import { mapString } from './utils';
 import {resolve,normalize,basename} from 'path';
+import { isRegExp } from "util";
 
 
 
@@ -197,6 +198,21 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                 }
 
             });
+        }
+        else if ( context.triggerKind === vscode.CompletionTriggerKind.TriggerCharacter)
+        {
+            if ( context.triggerCharacter === ".")
+            {
+                return new Promise((resolve) => {
+                    let pos = new Position(position.line,position.character-1);
+                    let tok = this._langGrammar.getTokenAtPosition(document,pos);
+                    if ( tok.text === "ds." /*HARDCODED */){
+                        
+                    }
+                    
+                });
+                
+            }
         }
         return new Promise(() => { });
 
