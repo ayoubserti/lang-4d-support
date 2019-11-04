@@ -2,7 +2,7 @@
 	"name": "lang-4d-support",
 	"displayName": "lang-4d-support",
 	"description": "VS Code extension for supporting 4D language",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "sertiayoub",
 	"license": "MIT",
 	"engines": {
@@ -34,6 +34,16 @@
 			{
 				"command": "extension.create_database_method",
 				"title": "Database Method",
+				"category": "4D"
+			},
+			{
+				"command": "extension.create_table",
+				"title": "New Table",
+				"category": "4D"
+			},
+			{
+				"command": "extension.create_field",
+				"title": "Add Field To Table",
 				"category": "4D"
 			}
 		],
@@ -105,7 +115,9 @@
 		"webpack-cli": "^3.3.9"
 	},
 	"dependencies": {
+		"@types/uuid": "^3.4.6",
 		"fast-xml-parser": "^3.12.20",
+		"uuid": "^3.3.3",
 		"vscode-textmate": "^4.1.1"
 	}
 }

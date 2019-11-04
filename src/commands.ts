@@ -3,6 +3,7 @@ import {content} from './templating';
 import { mkdir,copyFile, writeFile,existsSync} from 'fs';
 import {resolve,basename} from 'path';
 import {promisify} from "util";
+import {catalog} from './catalogDefinition';
 
 const writeFile$ = promisify(writeFile);
 const copyFile$ = promisify(copyFile);
@@ -127,4 +128,13 @@ export namespace Commands{
                 console.error(err);
             }
      });
+
+     //command to create Table
+     export const create_table = vscode.commands.registerCommand('extension.create_table',async() => {
+        const result = await vscode.window.showInputBox({placeHolder:"Table name"});
+        await catalog.AddTable(result);
+     });
+
+    //command to add new field to Table
+    export const create_field = vscode.commands.registerCommand('extension.create_field',async() => {});
 }

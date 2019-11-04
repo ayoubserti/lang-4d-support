@@ -208,6 +208,14 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                     let tok = this._langGrammar.getTokenAtPosition(document,pos);
                     if ( tok.text === "ds." /*HARDCODED */){
                         
+                        cat.catalog.refresh().then((res: Array<cat.D4Table>) => {
+                            let tbls : vscode.CompletionItem[] = [];
+                            for (let tb of res) {
+                               tbls.push(new vscode.CompletionItem(tb._name,vscode.CompletionItemKind.Struct));
+                            }
+                            resolve(tbls);
+                            
+                        });
                     }
                     
                 });
