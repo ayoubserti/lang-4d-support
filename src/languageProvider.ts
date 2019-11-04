@@ -207,7 +207,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                     let pos = new Position(position.line,position.character-1);
                     let tok = this._langGrammar.getTokenAtPosition(document,pos);
                     if ( tok.text === "ds." /*HARDCODED */){
-                        
+
                         cat.catalog.refresh().then((res: Array<cat.D4Table>) => {
                             let tbls : vscode.CompletionItem[] = [];
                             for (let tb of res) {
@@ -216,6 +216,22 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                             resolve(tbls);
                             
                         });
+                    }
+                    else /* TODO: check if it's a DataClass */{
+                        let suggests = ["all",
+                                    "fromCollection",
+                                    "get",
+                                    "getDataStore",
+                                    "getInfo",
+                                    "new",
+                                    "newSelection",
+                                    "query"];
+                        
+                        let tbls : vscode.CompletionItem[] = [];
+                        for (let tb of suggests) {
+                            tbls.push(new vscode.CompletionItem(tb,vscode.CompletionItemKind.Function));
+                        }
+                        resolve(tbls);
                     }
                     
                 });
