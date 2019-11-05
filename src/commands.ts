@@ -158,7 +158,7 @@ export namespace Commands {
             }
         };
         if ( field_type === "Alpha"){
-            field._options.limitting_length = "255";
+            field._options.limiting_length = "255";
         }
         
         await catalog.AddField(table_to,field);

@@ -300,7 +300,7 @@ class Catalog {
                     }
                 };
                 //optional attribute
-                for (let opt of field_def._options){
+                for (let opt of Object.getOwnPropertyNames(field_def._options)){
                     new_field.attr[opt] = field_def._options[opt];
                 }
                 if ( Array.isArray(table.field)) {
