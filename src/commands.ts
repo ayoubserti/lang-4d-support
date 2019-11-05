@@ -3,7 +3,7 @@ import { content } from './templating';
 import { mkdir, copyFile, writeFile, existsSync } from 'fs';
 import { resolve, basename } from 'path';
 import { promisify } from "util";
-import { catalog } from './catalogDefinition';
+import { catalog,D4Types } from './catalogDefinition';
 
 const writeFile$ = promisify(writeFile);
 const copyFile$ = promisify(copyFile);
@@ -140,6 +140,17 @@ export namespace Commands {
 
     //command to add new field to Table
     export const create_field = vscode.commands.registerCommand('extension.create_field', async () => {
+        let proj_path = vscode.workspace.rootPath || '';
+        let tables_def = await catalog.refresh();
+        let tables = [];
+        for (let t of  tables_def ){
+            tables.push(t._name);
+        }
+        const table_to = await vscode.window.showQuickPick(tables);
+        const field_name = await vscode.window.showInputBox({ placeHolder: "Field name" });
+        const field_type = await vscode.window.showQuickPick(D4Types);
+
         
-     });
+
+    });
 }

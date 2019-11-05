@@ -169,6 +169,25 @@ class Catalog {
                         <table_ref uuid="4E993BB25365614CB7E5BD8D7212D5C7" name="Table_1"/>
                     </field_ref>
                 </index>`;
+                table.index= {
+                    attr : {
+                        "kind" : "regular",
+                        "unique_keys" : "true",
+                        "uuid" : generate_uuid(),
+                        "type" : "7"
+                    },
+                    field_ref : {
+                        attr: {
+                            "name" : "ID",
+                            "uuid": field.attr["uuid"]
+                        },
+                        table_ref : {
+                            "uuid" : table.attr["uuid"],
+                            "name" : table.attr["name"]
+                        }
+                    }
+                };
+                
 
             }
 
