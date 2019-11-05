@@ -32,6 +32,23 @@ export enum D4FieldType{
 }
 
 export const D4Types = ["Alpha", "Text", "Date", "Time", "Boolean", "Integer", "Long Integer" ,"Integer 64 bits", "Real", "Blob", "Picture", "Object"];
+
+export const D4TypeToNumber  = {
+    "Boolean" :  D4FieldType.eBoolean,
+    "Integer" :  D4FieldType.eInteger,
+    "Long Integer" :  D4FieldType.eLongInteger,
+    "Integer 64 bits" :  D4FieldType.eLong64,
+    "Real" :  D4FieldType.eReal,
+    "Date" :  D4FieldType.eDate,
+    "Time" : D4FieldType.eTime,
+    "Text" : D4FieldType.eText,
+    "Alpha" : D4FieldType.eText,
+    "Picture" : D4FieldType.ePicture,
+    "Blob" : D4FieldType.eBlob,
+    "Object" : D4FieldType.eObject
+};
+
+
 export interface D4Field{
     _name : string;
     _type : D4FieldType;
@@ -85,10 +102,14 @@ class Catalog {
                         for (let t of jsonObj.base.table) {
                             let name: string = t.attr["name"];
                             let fields = [];
-                            if ( t.field !== undefined){
+                            if ( Array.isArray(t.field)){
                                 for (let f of t.field) {
                                     fields.push(f.attr["name"]);
                                 }
+                            }
+                            else if ( t.field !== undefined)
+                            {
+                                fields.push(t.field.attr["name"]);
                             }
                             this._table_list.push({
                                 _name: name,
@@ -101,9 +122,16 @@ class Catalog {
                         let t = jsonObj.base.table;
                         let name: string = t.attr["name"];
                             let fields = [];
-                            for (let f of t.field) {
-                                fields.push(f.attr["name"]);
+                            if ( Array.isArray(t.field)){
+                                for (let f of t.field) {
+                                    fields.push(f.attr["name"]);
+                                }
                             }
+                            else if ( t.field !== undefined)
+                            {
+                                fields.push(t.field.attr["name"]);
+                            }
+                            
                             this._table_list.push({
                                 _name: name,
                                 _field_list: fields
@@ -164,12 +192,7 @@ class Catalog {
                 table.field = field;
 
                 //Index for ID
-                let tmp = `<index kind="regular" unique_keys="true" uuid="FDFDB1868BEED44F80A0057CC89AF8B8" type="7">
-                    <field_ref uuid="29FB5C2CC6D5364DA767375612F86170" name="ID">
-                        <table_ref uuid="4E993BB25365614CB7E5BD8D7212D5C7" name="Table_1"/>
-                    </field_ref>
-                </index>`;
-                table.index= {
+                jsonObj.base.index= {
                     attr : {
                         "kind" : "regular",
                         "unique_keys" : "true",
@@ -182,15 +205,28 @@ class Catalog {
                             "uuid": field.attr["uuid"]
                         },
                         table_ref : {
-                            "uuid" : table.attr["uuid"],
+                            attr: {
+                                "uuid" : table.attr["uuid"],
                             "name" : table.attr["name"]
+                            }
+                            
                         }
                     }
                 };
-                
+                //lien de retour
+                table.field.index_ref= {
+                    attr : {
+                        "uuid" : jsonObj.base.index.attr["uuid"]
+                    }
+                };
 
             }
-
+            table.primary_key = {
+                attr : {
+                    "field_name" : "ID",
+                    "field_uuid" : table.field.attr["uuid"]
+                }
+            };
             if (jsonObj.base.table === undefined)
             {
                 //create table obj
@@ -221,7 +257,64 @@ class Catalog {
             }
 
             
+            //serialize xml
+            let parser = new Parser(options);
+            let xml_body =  parser.parse(jsonObj);
+            let header = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE base SYSTEM "http://www.4d.com/dtd/2007/base.dtd" >\n`;
+            let xml_str = header + xml_body;
+            await writeFile$(this._filename, xml_str);
+            resolve(true);
+        });
+    }
 
+    public async AddField (table_name : string , field_def : D4Field){
+
+        return new Promise(async (resolve) =>{
+            let Parser = xml.j2xParser;  //xml to json
+            let buf = await readFile$(this._filename);
+            var  jsonObj =  xml.parse(buf.toString(),options);
+
+            let table: any = null;
+            if ( Array.isArray(jsonObj.base.table)){
+                let c  = jsonObj.base.table.find( (e) =>{
+                    return (e.attr["name"] === table_name);
+                });
+                
+                table = c;
+
+            }
+            else if( jsonObj.base.table !==undefined)
+            {
+                if ( jsonObj.base.table.attr["name"] === table_name){
+                    table = jsonObj.base.table;
+                }
+            }
+
+            if ( table !== null)
+            {
+                let new_field =  {
+                    attr: {
+                        "name" : field_def._name,
+                        "uuid"  : generate_uuid(),
+                        "type" : field_def._type + ""
+                    }
+                };
+                //optional attribute
+                for (let opt of field_def._options){
+                    new_field.attr[opt] = field_def._options[opt];
+                }
+                if ( Array.isArray(table.field)) {
+                    table.field.push(new_field);
+                }
+                else if (table.field !== undefined){
+                    let tmp_fields = [];
+                    tmp_fields.push(table.field);
+                    tmp_fields.push(new_field);
+                    table.field = tmp_fields;
+                }
+            }
+
+            //serialize xml
             let parser = new Parser(options);
             let xml_body =  parser.parse(jsonObj);
             let header = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE base SYSTEM "http://www.4d.com/dtd/2007/base.dtd" >\n`;

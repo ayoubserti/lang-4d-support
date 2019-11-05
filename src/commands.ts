@@ -3,7 +3,7 @@ import { content } from './templating';
 import { mkdir, copyFile, writeFile, existsSync } from 'fs';
 import { resolve, basename } from 'path';
 import { promisify } from "util";
-import { catalog,D4Types } from './catalogDefinition';
+import { catalog,D4Types,D4Field, D4TypeToNumber } from './catalogDefinition';
 
 const writeFile$ = promisify(writeFile);
 const copyFile$ = promisify(copyFile);
@@ -150,7 +150,23 @@ export namespace Commands {
         const field_name = await vscode.window.showInputBox({ placeHolder: "Field name" });
         const field_type = await vscode.window.showQuickPick(D4Types);
 
+        let field :  D4Field =  {
+            _name : field_name,
+            _type : D4TypeToNumber[field_type],
+            _options : {
+                never_null  : "true"
+            }
+        };
+        if ( field_type === "Alpha"){
+            field._options.limitting_length = "255";
+        }
         
+        await catalog.AddField(table_to,field);
+        let path = resolve(proj_path, 'Project/Sources/catalog.4DCatalog');
 
+        let document = await vscode.workspace.openTextDocument(path);
+        await vscode.window.showTextDocument(document);
+        await vscode.commands.executeCommand('editor.action.format', document.uri);
+        await document.save();
     });
 }
