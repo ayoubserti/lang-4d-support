@@ -13,3 +13,7 @@ out/
 src/
 tsconfig.json
 webpack.config.js
+support/
+syntaxes/
+template/
+tools/

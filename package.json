@@ -64,7 +64,7 @@
 			{
 				"language": "4d",
 				"scopeName": "source.4dm",
-				"path": "./syntaxes/4d.tmLanguage.json",
+				"path": "./dist/syntaxes/4d.tmLanguage.json",
 				"embeddedLanguages": {
 					"meta.embedded.block.javascript": "source.js"
 				}
