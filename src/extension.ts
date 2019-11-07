@@ -63,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		
 	vscode.workspace.onDidOpenTextDocument((textdocument : vscode.TextDocument)=>{
-		do4DLint(textdocument);
+		//do4DLint(textdocument);
 		let method = langGrammar.tokenizeMethod(textdocument);
 		let a= 0;
 	}, null, context.subscriptions);
@@ -72,16 +72,16 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	vscode.window.onDidChangeActiveTextEditor(editor => {
 		if (editor) {
-			do4DLint(editor.document);
+			//do4DLint(editor.document);
 		}
 	}, null, context.subscriptions);
 
 	vscode.workspace.onDidCloseTextDocument((textDocument)=> {
-		diagnosticCollection.delete(textDocument.uri);
+		//diagnosticCollection.delete(textDocument.uri);
 	}, null, context.subscriptions);
 
 	vscode.workspace.onDidSaveTextDocument((textDocument)=> {
-		do4DLint(textDocument);
+		//do4DLint(textDocument);
 	}, null, context.subscriptions);
 
 }
