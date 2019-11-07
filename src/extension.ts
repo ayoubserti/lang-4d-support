@@ -16,11 +16,13 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(Commands.create_Project);
 	context.subscriptions.push(Commands.create_project_method);
 	context.subscriptions.push(Commands.create_database_method);
+	context.subscriptions.push(Commands.create_table);
+	context.subscriptions.push(Commands.create_field);
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider("4d",langProvider));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider("4d",  langProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentHighlightProvider("4d",  langProvider));
-	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("4d",  langProvider));
+	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("4d",  langProvider,'.', " "));
 	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider("4d",  langProvider,'(', ';'));
 	
 	//linter
@@ -61,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		
 	vscode.workspace.onDidOpenTextDocument((textdocument : vscode.TextDocument)=>{
-		do4DLint(textdocument);
+		//do4DLint(textdocument);
 		let method = langGrammar.tokenizeMethod(textdocument);
 		let a= 0;
 	}, null, context.subscriptions);
@@ -70,16 +72,16 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	vscode.window.onDidChangeActiveTextEditor(editor => {
 		if (editor) {
-			do4DLint(editor.document);
+			//do4DLint(editor.document);
 		}
 	}, null, context.subscriptions);
 
 	vscode.workspace.onDidCloseTextDocument((textDocument)=> {
-		diagnosticCollection.delete(textDocument.uri);
+		//diagnosticCollection.delete(textDocument.uri);
 	}, null, context.subscriptions);
 
 	vscode.workspace.onDidSaveTextDocument((textDocument)=> {
-		do4DLint(textDocument);
+		//do4DLint(textDocument);
 	}, null, context.subscriptions);
 
 }

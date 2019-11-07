@@ -8,6 +8,7 @@ import * as readline from 'readline';
 import * as fs from 'fs';
 import { mapString } from './utils';
 import {resolve,normalize,basename} from 'path';
+import { isRegExp } from "util";
 
 
 
@@ -197,6 +198,45 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                 }
 
             });
+        }
+        else if ( context.triggerKind === vscode.CompletionTriggerKind.TriggerCharacter)
+        {
+            if ( context.triggerCharacter === ".")
+            {
+                return new Promise((resolve) => {
+                    let pos = new Position(position.line,position.character-1);
+                    let tok = this._langGrammar.getTokenAtPosition(document,pos);
+                    if ( tok.text === "ds." /*HARDCODED */){
+
+                        cat.catalog.refresh().then((res: Array<cat.D4Table>) => {
+                            let tbls : vscode.CompletionItem[] = [];
+                            for (let tb of res) {
+                               tbls.push(new vscode.CompletionItem(tb._name,vscode.CompletionItemKind.Struct));
+                            }
+                            resolve(tbls);
+                            
+                        });
+                    }
+                    else /* TODO: check if it's a DataClass */{
+                        let suggests = ["all",
+                                    "fromCollection",
+                                    "get",
+                                    "getDataStore",
+                                    "getInfo",
+                                    "new",
+                                    "newSelection",
+                                    "query"];
+                        
+                        let tbls : vscode.CompletionItem[] = [];
+                        for (let tb of suggests) {
+                            tbls.push(new vscode.CompletionItem(tb,vscode.CompletionItemKind.Function));
+                        }
+                        resolve(tbls);
+                    }
+                    
+                });
+                
+            }
         }
         return new Promise(() => { });
 

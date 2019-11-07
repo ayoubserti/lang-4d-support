@@ -6,6 +6,9 @@
 			"include": "#comments"
 		},
 		{
+			"include" :"#for_loop"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
@@ -390,6 +393,31 @@
 			},
 			"end" : "\\]"
 			
+		},
+		"for_loop" :{
+			"name" : "meta.block.loop.for.4d",
+			"begin" :"^(?i)(for)\\((\\$[a-z]+);([0-9]+);([0-9]+)\\)",
+			"beginCaptures": {
+				
+				"1":{
+					"name" : "keyword.control.4d"
+				},
+				"2" : {
+					"name" : "variable.name.4d"
+				},
+				"3" :{
+					"name" : "constant.range.begin.4d"
+				},
+				"4" :{
+					"name" : "constant.range.end.4d"
+				}
+			},
+			"end": "(\\n)",
+			"endCaptures": {
+				"1" : {
+					"name" :"punctuation.section.end.for.4d"
+				}
+			}
 		},
 		"affectation_variable":
 		{
