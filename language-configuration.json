@@ -32,17 +32,10 @@
             "open": "While" , "close": "End While"
         },
         {
-            "open": "For each" , "close": "End for each"
-        },
-        {
-            "open": "Use" , "close": "End Use"
-        },
-        {
             "open": "(" , "close": ")"
         },
         { "open": "{" , "close": "}"},
         { "open": "[" , "close": "]"},
-        { "open": "for" , "close": "end for","notIn": ["string", "comment"]},
         { "open": "Begin SQL" , "close": "End SQL"},
         { "open": "'", "close": "'", "notIn": ["string", "comment"] },
         { "open": "\"", "close": "\"", "notIn": ["string"] },

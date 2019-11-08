@@ -206,7 +206,7 @@ export class D4DefinitionProvider implements vscode.DefinitionProvider, vscode.H
                 return new Promise((resolve) => {
                     let pos = new Position(position.line,position.character-1);
                     let tok = this._langGrammar.getTokenAtPosition(document,pos);
-                    if ( tok.text === "ds." /*HARDCODED */){
+                    if ( tok.text.trim() === "ds." /*HARDCODED */){
 
                         cat.catalog.refresh().then((res: Array<cat.D4Table>) => {
                             let tbls : vscode.CompletionItem[] = [];

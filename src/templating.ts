@@ -123,6 +123,7 @@ export namespace content {
         { source: "catalog.4DCatalog.tmpl", target: 'Project/Sources/catalog.4DCatalog' },
         { source: "folders.json.tmpl", target:  'Project/Sources/folders.json' },
         { source: "menus.json.tmpl", target:  'Project/Sources/menus.json' },
-        { source: "directory.json.tmpl", target:  'Settings/directory.json' }
+        { source: "directory.json.tmpl", target:  'Settings/directory.json' },
+        { source : "settings.4DSettings.tmpl" , target : 'Project/Sources/settings.4DSettings'}
         ];
 }
