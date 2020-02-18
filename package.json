@@ -8,6 +8,11 @@
 	"engines": {
 		"vscode": "^1.36.1"
 	},
+	"repository": { 
+		"type": "git",
+		"url": "https://github.com/ayoubserti/lang-4d-support.git"
+
+	},
 	"categories": [
 		"Programming Languages",
 		"Linters"
