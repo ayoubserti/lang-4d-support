@@ -63,6 +63,9 @@
 			"include" : "#constant_4d"
 		},
 		{
+			"include" :"#this-function"
+		},
+		{
 			"include": "#numbers"
 		},
 		{
@@ -109,9 +112,30 @@
 		},
 		{
 			"include": "#method_access"
+		},
+		{
+			"match": "^\\n*[\\t ]*(?i)(Class constructor)",
+			"name": "entity.name.class.4d"
+		},
+		{
+			"match": "^\\n*[\\t ]*(?i)(Function)(\\s[a-z_0-9]+[a-z_0-9 ]*)",
+			"name": "variable.language.function.4d"
+		},
+		{
+			"match": "^\\n*[\\t ]*(?i)(Class extends)(\\s[a-z_0-9]+[a-z_0-9 ]*)",
+			"name": "entity.name.class.4d"
+		},
+		{
+			"match": "^\\n*[\\t ]*(?i)(Super(\\:C1705)?)",
+			"name": "variable.language.super.4d"
 		}
+		
 	],
 	"repository": {
+		"this-function" :{
+			"match": "(^\\n*[\\t ]*(?i)(This(\\:C1470)?))|((?i)(This(\\:C1470)?))",
+			"name": "variable.language.this.4d"
+		},
 		"long_int_variable" :{
 			"name" : "storage.type.4d",
 			"begin": "^\\n*[\\t ]*(?i)(C_LONGINT(\\:C283)?)(\\()((?i)(?:\\$|<>|)(?:\\$|<>|)[a-z_0-9]+[a-z_0-9 ]*)",
@@ -518,6 +542,9 @@
 			},
 			"patterns": [
 				{
+					"include" :"#this-function"
+				},
+				{
 					"include": "#function-call-innards"
 				},
 				{
@@ -874,6 +901,21 @@
 					"name": "comment.block.4d"
 				},
 				{
+					"begin": "/\\*",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.begin.4d"
+						}
+					},
+					"end": "\\*/",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.end.4d"
+						}
+					},
+					"name": "comment.block.4d"
+				},
+				{
 					"captures": {
 						"1": {
 							"name": "meta.toc-list.banner.line.4d"
@@ -977,6 +1019,9 @@
 					},
 					"patterns": [
 						{
+						  "include" :"#this-function"
+						},
+						{
 							"include": "#function-call-innards"
 						},
 						{
@@ -1033,6 +1078,9 @@
 						},
 						{
 							"include" :"#table_reference"
+						},
+						{
+						  "include" :"#this-function"
 						}
 					]
 				}
@@ -1055,6 +1103,9 @@
 			  },
 			  "5": {
 				"patterns": [
+					{
+					"include": "#this-function"
+					},	
 				  {
 					"include": "#member_access"
 				  },
@@ -1107,6 +1158,9 @@
 					"include": "#method_access"
 				  },
 				  {
+					  "include" :"#this-function"
+				  },
+				  {
 					"match": "((?:[a-zA-Z_]\\w*|(?<=\\]|\\)))\\s*)(?:((?:\\.\\*|\\.))|((?:->\\*|->)))",
 					"captures": {
 					  "1": {
@@ -1157,12 +1211,15 @@
 				{
 					"include" : "#param_separator"
 				},
-			  {
-				"include": "#function-call-innards"
-			  },
-			  {
-				  "include" :"#table_reference"
-			  }
+				{
+					"include": "#function-call-innards"
+				},
+				{
+					"include" :"#table_reference"
+				},
+				{
+					"include" :"#this-function"
+				}
 			]
 		  }
 	},

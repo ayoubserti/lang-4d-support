@@ -2,26 +2,25 @@
 	"name": "lang-4d-support",
 	"displayName": "lang-4d-support",
 	"description": "VS Code extension for supporting 4D language",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"publisher": "sertiayoub",
 	"license": "MIT",
 	"engines": {
 		"vscode": "^1.36.1"
 	},
-	"repository": { 
+	"repository": {
 		"type": "git",
 		"url": "https://github.com/ayoubserti/lang-4d-support.git"
-
 	},
 	"categories": [
 		"Programming Languages",
 		"Linters"
 	],
 	"icon": "icon.png",
-    "keywords": [
-        "4d",
-        "4dm"
-    ],
+	"keywords": [
+		"4d",
+		"4dm"
+	],
 	"activationEvents": [
 		"onLanguage:4d",
 		"onCommand:extension.create_4d_project",
